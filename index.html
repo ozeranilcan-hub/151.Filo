@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#080B10" />
     <title>FinalApproach — Pilot Training</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -58,6 +58,7 @@
             <button id="tabHolding" onclick="switchTab('holding')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">HOLDING</button>
             <button id="tabWca" onclick="switchTab('wca')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">WCA</button>
             <button id="tabVario" onclick="switchTab('vario')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">VARYO</button>
+            <button id="tabMetar" onclick="switchTab('metar')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">METAR/TAF</button>
         </nav>
         <button onclick="toggleTheme()" title="Tema" class="p-2 rounded-xl border border-slate-800 transition-colors hover:border-slate-700" style="background-color:var(--surface); color:var(--amber);">
             <svg id="themeIconDark" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -72,7 +73,17 @@
         <h1 class="font-mono text-3xl sm:text-4xl font-extrabold mb-3" style="color:var(--text)">Hoş Geldiniz, Pilot.</h1>
         <p class="text-sm sm:text-base" style="color:var(--text-muted)">Antrenman yapmak veya hesaplama yapmak için bir modül seçin.</p>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+    <div id="dailyTipCard" class="avionics-panel rounded-2xl p-5 w-full mb-8" style="border-left:4px solid var(--amber);">
+        <div class="flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2"><span class="font-mono text-[11px] font-bold tracking-wider text-avionics-amber">💡 GÜNÜN BİLGİSİ</span><span id="tipCat" class="px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-avionics-cyan/15 text-avionics-cyan"></span></div>
+            <button onclick="showDailyTip()" class="px-2.5 py-1 rounded-lg border font-mono text-[11px] font-semibold" style="border-color:var(--border);color:var(--text);">BAŞKA BİLGİ ↻</button>
+        </div>
+        <h3 id="tipTitle" class="font-mono text-base font-bold mb-1" style="color:var(--text)"></h3>
+        <p id="tipText" class="text-sm leading-relaxed" style="color:var(--text-muted)"></p>
+        <div id="tipNote" class="hidden mt-3 rounded-xl p-3 text-xs leading-relaxed border" style="background-color:var(--bg);border-color:var(--border);color:var(--text);"></div>
+        <div id="tipMeta" class="font-mono text-[10px] mt-2" style="color:var(--text-muted)"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 w-full">
         <div onclick="switchTab('reciprocal')" class="avionics-panel home-card rounded-2xl p-6 flex flex-col items-center text-center border-2" style="border-color:var(--border);">
             <div class="w-14 h-14 rounded-full bg-avionics-cyan/10 flex items-center justify-center mb-4"><svg class="w-7 h-7 text-avionics-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">180° Reciprocal</h2>
@@ -96,6 +107,12 @@
             <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">Varyo &amp; TOD</h2>
             <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Mesafe, hız ve irtifa farkına göre alçalma/tırmanma varyosunu hesaplayın ve çalışın.</p>
             <button class="px-5 py-2 rounded-lg bg-avionics-amber font-mono font-bold text-xs" style="color:var(--bg)">VARYO ÇALIŞ</button>
+        </div>
+        <div onclick="switchTab('metar')" class="avionics-panel home-card rounded-2xl p-6 flex flex-col items-center text-center border-2" style="border-color:var(--border);">
+            <div class="w-14 h-14 rounded-full bg-avionics-cyan/10 flex items-center justify-center mb-4 text-2xl">☁️</div>
+            <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">METAR / TAF</h2>
+            <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Raporları çözümleyin, kısaltmaları öğrenin, quiz ile pekiştirin.</p>
+            <button class="px-5 py-2 rounded-lg bg-avionics-cyan font-mono font-bold text-xs" style="color:var(--bg)">OKUMAYI ÖĞREN</button>
         </div>
     </div>
 </main>
@@ -446,7 +463,7 @@
             </div>
             <div class="grid grid-cols-3 gap-2.5">
                 <div class="rounded-xl p-3 text-center border" style="background-color:var(--bg); border-color:var(--border);">
-                    <div class="font-mono text-[10px]" style="color:var(--text-muted)">X-WIND</div>
+                    <div class="font-mono text-[10px]" style="color:var(--text-muted)">YAN RÜZGAR</div>
                     <div id="resCrosswind" class="font-mono text-sm sm:text-base font-bold mt-0.5 tabular-nums" style="color:var(--text)">19 kt SAĞ</div>
                 </div>
                 <div class="rounded-xl p-3 text-center border" style="background-color:var(--bg); border-color:var(--border);">
@@ -454,7 +471,7 @@
                     <div id="resHeadTailVal" class="font-mono text-sm sm:text-base font-bold text-avionics-amber mt-0.5 tabular-nums">-16 kt</div>
                 </div>
                 <div class="rounded-xl p-3 text-center border" style="background-color:var(--bg); border-color:var(--border);">
-                    <div class="font-mono text-[10px]" style="color:var(--text-muted)">60 KURALI</div>
+                    <div class="font-mono text-[10px]" style="color:var(--text-muted)">ZİHİNDEN (60 KURALI)</div>
                     <div id="resMentalApprox" class="font-mono text-sm sm:text-base font-bold text-avionics-cyan mt-0.5 tabular-nums">+9°</div>
                 </div>
             </div>
@@ -484,10 +501,11 @@
                 </svg>
             </div>
             <div class="flex-1 space-y-2.5 text-xs">
-                <div class="font-mono font-bold uppercase tracking-wider" style="color:var(--text)">ZİHİNSEL ADIMLAR</div>
+                <details open class="space-y-2.5"><summary class="font-mono font-bold uppercase tracking-wider cursor-pointer" style="color:var(--text)">NASIL HESAPLANIR?</summary>
                 <div id="wcaStep1" class="rounded-xl p-2.5 font-mono text-[11px] border" style="background-color:var(--bg); border-color:var(--border); color:var(--text-muted)">1. ...</div>
                 <div id="wcaStep2" class="rounded-xl p-2.5 font-mono text-[11px] border" style="background-color:var(--bg); border-color:var(--border); color:var(--text-muted)">2. ...</div>
                 <div id="wcaStep3" class="rounded-xl p-2.5 font-mono text-[11px] text-avionics-cyan border" style="background-color:var(--bg); border-color:var(--border);">3. ...</div>
+            </details>
             </div>
         </div>
     </section>
@@ -576,10 +594,12 @@
             </div>
 
             <!-- Hesap Adımları -->
+            <details open><summary class="font-mono text-[11px] font-bold uppercase tracking-wider cursor-pointer mb-1.5" style="color:var(--text)">NASIL HESAPLANIR?</summary>
             <div class="space-y-1.5 font-mono text-[11px]">
                 <div id="varioStep1" class="p-2 rounded-lg border" style="background-color:var(--surface); border-color:var(--border); color:var(--text-muted)">1. ...</div>
                 <div id="varioStep2" class="p-2 rounded-lg border text-avionics-cyan" style="background-color:var(--surface); border-color:var(--border);">2. ...</div>
             </div>
+            </details>
         </div>
     </section>
 
@@ -637,6 +657,34 @@
     </aside>
 </main>
 
+<main id="viewMetar" role="tabpanel" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <section class="lg:col-span-7 avionics-panel rounded-2xl p-5 flex flex-col gap-4">
+        <div><h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">METAR / TAF ÇÖZÜMLEYİCİ</h2>
+        <p class="text-xs mt-0.5" style="color:var(--text-muted)">Raporu yapıştırın; her grup tek tek açıklanır.</p></div>
+        <textarea id="metarInput" rows="3" oninput="metarDecode()" spellcheck="false" placeholder="METAR LTFE 201020Z 32008KT 9999 FEW040 18/09 Q1016 NOSIG" class="w-full rounded-xl p-3 font-mono text-sm outline-none border uppercase" style="background-color:var(--bg);border-color:var(--border);color:var(--text);"></textarea>
+        <div class="flex flex-wrap gap-2 font-mono text-[11px] font-semibold">
+            <button onclick="metarSample(0)" class="px-3 py-1.5 rounded-lg border text-avionics-cyan" style="border-color:var(--border);">Örnek METAR 1</button>
+            <button onclick="metarSample(1)" class="px-3 py-1.5 rounded-lg border text-avionics-amber" style="border-color:var(--border);">Örnek METAR 2 (kötü hava)</button>
+            <button onclick="metarSample(2)" class="px-3 py-1.5 rounded-lg border text-avionics-emerald" style="border-color:var(--border);">Örnek TAF</button>
+            <button onclick="metarSample(-1)" class="px-3 py-1.5 rounded-lg border" style="border-color:var(--border);color:var(--text-muted);">Temizle</button>
+        </div>
+        <div id="metarOut" class="text-xs"></div>
+    </section>
+    <section class="lg:col-span-5 avionics-panel rounded-2xl p-5 flex flex-col gap-3">
+        <div class="flex items-center justify-between"><h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">METAR QUIZ</h2><span id="mqScore" class="font-mono text-xs font-bold text-avionics-emerald">Skor: 0 / 0</span></div>
+        <div id="mqMetar" class="rounded-xl p-3 font-mono text-xs border break-words" style="background-color:var(--bg);border-color:var(--border);color:var(--cyan);"></div>
+        <div id="mqQ" class="text-sm font-semibold" style="color:var(--text)"></div>
+        <div id="mqOpts" class="grid grid-cols-2 gap-2"></div>
+        <div id="mqFb" class="font-mono text-xs min-h-[18px]" style="color:var(--text-muted)"></div>
+        <div class="flex gap-2"><button onclick="metarQuiz()" class="flex-1 py-2 rounded-lg bg-avionics-cyan font-mono font-bold text-xs" style="color:var(--bg);">YENİ SORU ↻</button><button onclick="metarSend()" class="py-2 px-3 rounded-lg border font-mono text-xs" style="border-color:var(--border);color:var(--text);">ÇÖZÜMLEYİCİDE AÇ</button></div>
+    </section>
+    <section class="lg:col-span-12 avionics-panel rounded-2xl p-5 flex flex-col gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">KISALTMA SÖZLÜĞÜ</h2>
+        <input id="metarSearch" oninput="metarGlossary()" placeholder="Ara: CAVOK, BECMG, FG…" class="rounded-lg px-3 py-1.5 font-mono text-xs outline-none border w-56" style="background-color:var(--bg);border-color:var(--border);color:var(--text);"></div>
+        <div id="metarGloss" class="grid grid-cols-1 md:grid-cols-2 gap-x-6"></div>
+    </section>
+</main>
+
 <script>
     const IS_FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     const state = {
@@ -645,7 +693,7 @@
         timerInterval: null, questionStartTime: 0, correctTimeout: null
     };
 
-    const TABS = ['home', 'reciprocal', 'holding', 'wca', 'vario'];
+    const TABS = ['home', 'reciprocal', 'holding', 'wca', 'vario', 'metar'];
     function switchTab(tab) {
         state.activeTab = tab;
         TABS.forEach(t => {
@@ -1188,18 +1236,18 @@
         document.getElementById('resCrosswind').textContent = absX === 0 ? '0 kt' : `${absX} kt ${crosswind > 0 ? 'SAĞ' : 'SOL'}`;
         const rHw = Math.round(headwind);
         if (rHw >= 0) {
-            document.getElementById('resHeadTailLabel').textContent = 'BAŞ';
+            document.getElementById('resHeadTailLabel').textContent = 'BAŞ RÜZGARI';
             document.getElementById('resHeadTailVal').textContent = `-${rHw} kt`;
             document.getElementById('resHeadTailVal').className = 'font-mono text-sm sm:text-base font-bold text-avionics-amber mt-0.5 tabular-nums';
         } else {
-            document.getElementById('resHeadTailLabel').textContent = 'KUYRUK';
+            document.getElementById('resHeadTailLabel').textContent = 'KUYRUK RÜZGARI';
             document.getElementById('resHeadTailVal').textContent = `+${Math.abs(rHw)} kt`;
             document.getElementById('resHeadTailVal').className = 'font-mono text-sm sm:text-base font-bold text-avionics-emerald mt-0.5 tabular-nums';
         }
         document.getElementById('resMentalApprox').textContent = mental > 0 ? `+${mental}°` : `${mental}°`;
-        document.getElementById('wcaStep1').textContent = `1. Max Drift = (60 ÷ ${tas}) × ${windSpd}kt = ${maxDrift.toFixed(1)}°`;
-        document.getElementById('wcaStep2').textContent = `2. Etkin ${Math.round(acute)}° (${clockText}) → WCA ≈ ${mental > 0 ? '+' + mental : mental}°`;
-        document.getElementById('wcaStep3').textContent = `3. Yeni HDG = ${formatHeading(hdg)}° ${roundedWca >= 0 ? '+' : '-'} ${Math.abs(roundedWca)}° = ${formatHeading(actualHdg)}°`;
+        document.getElementById('wcaStep1').textContent = `1) Rüzgar rotadan ne kadar saptırır? 60 ÷ ${tas} kt × ${Math.round(windSpd)} kt = ${maxDrift.toFixed(1)}° (rüzgar tam yandan eserse bu en kötü durumdur)`;
+        document.getElementById('wcaStep2').textContent = `2) Rüzgar rotanıza ${Math.round(acute)}° açıyla geliyor; bu sapmanın ${clockMult === 0 ? 'hiçbiri' : clockMult === 1 ? 'tamamı' : clockText + "'ü"} etkili olur → düzeltme ≈ ${mental > 0 ? '+' + mental : mental}°`;
+        document.getElementById('wcaStep3').textContent = `3) ${formatHeading(hdg)}° rotayı tutmak için başı rüzgara doğru ${Math.abs(roundedWca)}° ${roundedWca >= 0 ? 'sağa' : 'sola'} çevirin → HDG ${formatHeading(actualHdg)}°`;
         document.getElementById('wcaHsiHdgText').textContent = formatHeading(actualHdg) + '°';
         document.getElementById('wcaHsiCrsText').textContent = formatHeading(hdg) + '°';
         document.getElementById('wcaHsiTopBox').textContent = formatHeading(actualHdg) + '°';
@@ -1283,8 +1331,8 @@
         document.getElementById('varioResTime').textContent = `${mins} dk ${secs} sn`;
         document.getElementById('varioResAngle').textContent = `Açı: ${angleDeg.toFixed(1)}° | ${ftPerNm} ft/NM`;
 
-        document.getElementById('varioStep1').textContent = `1. Süre = (${dist} NM ÷ ${gs} kt) × 60 = ${timeMin.toFixed(2)} dk (${mins} dk ${secs} sn)`;
-        document.getElementById('varioStep2').textContent = `2. Varyo = ${alt} ft ÷ ${timeMin.toFixed(2)} dk = ${isDesc ? '-' : '+'}${fpm} ft/dk`;
+        document.getElementById('varioStep1').textContent = `1) Kaç dakikada gidersiniz? ${dist} NM ÷ ${gs} kt × 60 = ${timeMin.toFixed(2)} dk (${mins} dk ${secs} sn)`;
+        document.getElementById('varioStep2').textContent = `2) Dakikada ne kadar? ${alt} ft ÷ ${timeMin.toFixed(2)} dk = ${isDesc ? '-' : '+'}${fpm} ft/dk. Kısayol: 3° için yer hızı × 5 ≈ ${Math.round(gs * 5)} ft/dk`;
 
         const line = document.getElementById('varioProfileGlide');
         const plane = document.getElementById('varioSvgPlane');
@@ -1375,6 +1423,274 @@
         }
     }
 
+
+    // ========== GÜNÜN BİLGİSİ (Efe Instrument Notları + IR Döküman) ==========
+    const TIPS = [
+    [`CDFA`,`MAPt'de MDA yanılgısı`,`CDFA'da uçak MAPt'de MDA'da olmaz; profil onu eşik üzerinde +50 ft'e götürür. Karar, MAPt veya MDA'dan hangisi önce gelirse orada verilir.`],
+    [`CDFA`,`Görüş yoksa`,`Görüş yoksa MAPt beklenmez, MDA delinmeden pas geçilir. Pas MAPt'ten önce başlasa bile MAPt'e kadar prosedür hattı yanal olarak izlenir.`],
+    [`CDFA`,`Yüksek kalmak ve PAPI`,`MAPt'de yüksekseniz soru "pisti görüyor muyum" değil "stabil inebilir miyim"dir. 4 beyaz PAPI = pas geç; 3 beyaz 1 kırmızı, varyo limitleri aşılmadan hatta oturulabiliyorsa devam edilebilir.`],
+    [`Minimalar`,`MDA bir taban irtifadır`,`NPA'da MDA karar irtifası değil, altına inilmeyen taban irtifadır. Pas geçişteki sarkma yüzünden barometrik minimum MDA+50 ft set edilir ve "Minimums" çağrısı orada yapılır.`],
+    [`Minimalar`,`DA'yı nereye set edersin?`,`Brifing öncesi DA, PFD TIMER/REF menüsünden barometrik minimum olarak set edilir. Pas geçme VOR'u NAV2'ye, pas geçme course'u CDI-2'ye ayarlanır.`],
+    [`ILS`,`Glide slope 10 NM`,`ILS glide slope sinyali 10 NM'e kadar güvenilirdir. 10 NM dışında G/S ibresi merkezlense bile doğrudan inilmez; hesaplı varyoyla inilir, 10 NM içinde doğrulanınca yakalanır (false G/S koruması).`],
+    [`ILS`,`Sıcak havada G/S`,`Sıcak havada uçak daha yüksekte olacağından G/S, beklenen DME mesafesinden önce merkeze gelebilir. DME beklenmez, G/S izlenir.`],
+    [`ILS`,`Call-out sırası`,`LOCALIZER ALIVE → LOCALIZER ESTABLISHED (1 dot) → GLIDE SLOPE ALIVE → G/S 1 dot üstünde approach flaps → GLIDE SLOPE CAPTURED → ONE THOUSAND, STABILIZED → HUNDRED ABOVE → MINIMUMS.`],
+    [`ILS`,`Checklist ve frekans zamanı`,`Descent and Approach checklist en geç FAP'a 10 NM kala bitmiş olmalı. ILS frekansı, inbound course'a en geç 90° kala aktif edilir.`],
+    [`FAF / FAP`,`İkisi aynı şey değil`,`FAF, NPA'da navaid ile sabitlenmiş coğrafi "Maltese Cross" noktasıdır. FAP, ILS'te süzülüş hattının yakalandığı noktadır; coğrafi fiks değildir.`],
+    [`Stabilizasyon`,`En geç stabil olma noktası`,`Tam iniş konfigürasyonunda stabil olmanın en geç noktası FAF/FAP değil, stabilizasyon irtifasıdır: IMC'de 1000 ft AAL, VMC'de 500 ft AAL.`],
+    [`Yaklaşma`,`Step-down'u sürekli alçal`,`Chart'ta step-down görünen intermediate segment sürekli alçalmayla uçulabilir ama FAF irtifasının altına inilmez (at or above). FAF/FAP geçişinde "Crossing 2500 feet" gibi sesli teyit yapılır.`],
+    [`Görsel referans`,`100 ft kuralı`,`Sadece yaklaşma ışıklarını görerek TDZE'nin 100 ft üstüne kadar inebilirsiniz. Altı için eşik, eşik işaretleri, TDZ ışıkları ya da kırmızı sonlandırma/yan sıra barları görülmelidir; yoksa pas geçilir.`],
+    [`Görsel referans`,`EASA yanal eleman şartı`,`EASA'ya göre yaklaşma ışıklarıyla devam için ışıklarda en az bir yanal eleman (crossbar gibi) görülmeli; sadece merkez hattı yetmeyebilir.`],
+    [`İllüzyon`,`Işıklara bakıp varyoyu unutma`,`Düşük görüşte yalnız ışıklarla süzülüş tutmak black hole ve duck-under illüzyonu riskidir. FPV'yi pist başına kilitleyin; varyo kontrolünü (GS × 5) taramadan çıkarmayın.`],
+    [`Formül`,`Varyo = GS × 5`,`3°'lik süzülüş için varyo ≈ yer hızı × 5. %5 gradyan ≈ 3° ≈ NM başına yaklaşık 300 ft.`],
+    [`Formül`,`Kerteriz düşmesi`,`İstasyona mesafe (NM) = geçen süre (sn) ÷ radyal değişimi (°) × GS ÷ 60.`],
+    [`Formül`,`Yatış açıları`,`Standart yatış ≈ TAS/10 + 7. Yarı standart yatış ≈ TAS/20 + 7.`],
+    [`Formül`,`TAS tahmini`,`Her 1000 ft için IAS'ın %2'sini ekleyin: TAS ≈ IAS + (irtifa/1000) × IAS × 0,02.`],
+    [`Formül`,`Gradyan çevirileri`,`ROC (fpm) = gradyan (%) × GS. Alçalma açısı (°) = gradyan (%) × 0,57. ROD (fpm) = gradyan (%) × GS.`],
+    [`Formül`,`DME arkına giriş`,`Arka girişte lead mesafesi (NM) ≈ GS ÷ 200.`],
+    [`Formül`,`VDP`,`VDP mesafesi ≈ MDH (ft) ÷ (VDA (°) × 100) NM.`],
+    [`Holding`,`Outbound süresi`,`Outbound bacak 14.000 ft ve altında 1 dk, üstünde 1 dk 30 sn uçulur. Holding'e girmeden en az 3 dk önce limit sürate yavaşlamaya başlanır.`],
+    [`Holding`,`Dönüş oranı`,`Patern dönüşleri 3°/sn veya 25° yatıştan hangisi daha az yatış gerektiriyorsa onunla yapılır. Eğitim uçaklarında bu yaklaşık 17° yatıştır.`],
+    [`Holding`,`+70 / −110 kuralı`,`Standart holdingte inbound hattında uçarken başınızdan sağa 70°, sola 110° hat çizin: 70° dilim teardrop, 110° dilim paralel, kalan 180° direkt. Non-standartta yönler tersine çevrilir.`],
+    [`Holding`,`El metodu`,`Standart holding için sağ el, non-standart için sol el. İşaret parmağı fikse giden başınız; outbound baş başparmak-işaret arası → teardrop, serçe tarafı → paralel, diğeri → direkt.`],
+    [`Holding`,`HSI ile giriş seçimi`,`Inbound course'u set edince CDI ucu önünüzdeyse direkt. Arkanızdaysa: fiksi geçince holding içine gidiyorsanız teardrop, dışına gidiyorsanız paralel.`],
+    [`Holding`,`Baş rüzgarında outbound dönüşü`,`İstasyon geçişinde baş rüzgarı varsa rüzgar hızının yarısı kadar saniye düz uçulup dönülür (20 kt → 10 sn). Arka rüzgarda hemen dönülür.`],
+    [`Holding`,`WCA × 3`,`Holding'de heading düzeltmesi WCA'nın 3 katıdır. Rüzgar için yatış açısı değiştirilmez; önleme gerekiyorsa başta çıkış yapılır.`],
+    [`Holding`,`Pas geçme sonrası: homing yok`,`Pas geçme sonrası VOR/NDB'ye dönüp holding yapılacaksa homing değil tracking yapılır; homing rüzgar düzeltmesi vermediği için köpek eğrisi çizer ve giriş sektörünü bozar.`],
+    [`Established`,`Ne zaman "established"?`,`Localizer: CDI 1 dot içinde. VOR: half scale (5°) içinde. NDB: bearing ±5° içinde. Established olmadan alçalma başlamaz; G/S gelse bile.`],
+    [`Radar`,`Vektörde rüzgar düzeltmesi yok`,`ATC radar vektörü (heading) uçarken rüzgar düzeltmesi yapılmaz; ATC rüzgarı radar ekranında görüp baş verir.`],
+    [`Altimetre`,`High to low, look out below`,`Hava ISA'dan soğuksa gerçek irtifa gösterilenden düşüktür. −40°C'de 2000 ft gösteren altimetre gerçekte yaklaşık 1520 ft olabilir.`],
+    [`Altimetre`,`%4 kuralı`,`Meydan sıcaklığı standardın altındaki her 10°C için yükseklikte yaklaşık %4 artırın. Bu kural −15°C üstünde güvenilirdir.`],
+    [`Altimetre`,`Soğuk hava düzeltmesi ne zaman?`,`0°C veya soğukta DA/MDA, FAF geçiş irtifası ve step-down irtifalarına düzeltme uygulanır. Dağlıkta (3000 ft AMSL üzeri) 0°C ve altı yeterlidir.`],
+    [`Altimetre`,`ATC'ye bildir`,`FAF, procedure turn veya pas geçme irtifasına düzeltme uygularsanız niyetinizi ve yeni irtifayı ATC'ye bildirin. Atanmış irtifa kabul edildikten sonra bildirmeden değiştirilmez.`],
+    [`Fizyoloji`,`Oksijen limitleri`,`Basınçsız uçakta 10.000–13.000 ft kabin irtifasında oksijensiz en fazla 30 dk; fazlası için oksijen şart. 13.000 ft üstünde uçuş süresi boyunca sürekli oksijen gerekir.`],
+    [`Meydan`,`RVR`,`Görüş 1500 m altına düşünce RVR raporlanır. Bölümleri TDZ, MID ve RO'dur; transmisyometre ile ölçülür.`],
+    [`Meydan`,`Declared distances`,`TODA = TORA + clearway (TORA × 1,5'i geçemez). ASDA = TORA + stopway. LDA = eşikten (displaced varsa sonrasından) pist sonuna.`],
+    [`Meydan`,`Uçak kategorisi`,`Kategori, iniş konfigürasyonundaki Vat (1,3 × Vso) ile belirlenir; manevra sahası yarıçapını ve minimaları etkiler.`],
+    [`Circling`,`CAT A için 1,68 NM`,`CAT A için görerek manevra sahası yarıçapı 1,68 NM'dir. Pist başına mesafe bundan azalmadan dönüşe başlanmaz ve manevra bu sahada kalır.`],
+    [`Circling`,`Yasaklı sektör`,`Charttaki "circling not authorized" notu varsa (örn. yüksek arazi) manevra yasak olmayan tarafta planlanır.`],
+    [`Kalkış`,`394 ft`,`Kalkış rotası 15°'den fazla dönüş gerektiriyorsa dönüş alanı oluşur; uçak en az 394 ft (120 m) irtifaya ulaşana kadar düz uçuş varsayılır.`],
+    [`Seyrüsefer`,`Turn anticipation`,`Fly-by waypoint'te fiksten yaklaşık 0,5–1 NM önce dönüşe başlanır. SID dönüşlerinde 30°'ye kadar önleme açısı kullanılabilir.`],
+    [`Trafik`,`Altımızda trafik varsa`,`VOR'dan ayrılırken altımızda trafik varsa hemen alçalınmaz; yaklaşık 3 NM düz uçulup ayrım sağlanır. Tırmanışta trafiğin irtifası geçilmeden dönüş başlatılmaz.`],
+    [`Kokpit`,`Steril kokpit`,`Taksi, kalkış ve yaklaşmada sadece standart call-out'lar ve ATC konuşması yapılır. Checklist'te sadece madde ve durum okunur: "Fuel Pumps – OFF".`],
+    [`G1000`,`GPS uydu göstergeleri`,`Yeşil çubuk: uydu konum çözümünde aktif kullanılıyor. "D" harfi: SBAS (WAAS/EGNOS) diferansiyel düzeltme uydusu.`]
+    ];
+    const TIP_NOTES = {
+    "MAPt'de MDA yanılgısı":`Eski NPA alışkanlığı "MDA'ya in, yatay uç, MAPt'i bekle" idi. CDFA'da hiç yatay uçmazsınız; MDA sadece karar noktasıdır. Sarkma payı için +50 ft eklenir.`,
+    "Görüş yoksa":`Pas MAPt'ten önce başlasa bile dönüş yapılmaz; çünkü mania korunumu MAPt'ten itibaren başlar. Önce yukarı, yanal manevra MAPt'ten sonra.`,
+    "Yüksek kalmak ve PAPI":`Fazla yükseklik demek, kalan mesafede fazla varyo demektir. Varyo limitini aşıp stabilizasyonu bozacaksanız pisti görseniz de pas geçilir.`,
+    "MDA bir taban irtifadır":`DA'da 'delip geri çıkmak' mümkündür, MDA'da değildir. Bu fark yüzünden NPA minimumuna +50 ft eklenir; ILS DA'sında bu gerekmez.`,
+    "DA'yı nereye set edersin?":`Baro minimumu set etmek, minimuma yaklaşırken PFD'nin sizi uyarmasını sağlar; çağrıyı unutmanızı engeller.`,
+    "Glide slope 10 NM":`Hat 10 NM dışında yakalanırsa sahte süzülüş hattı olabilir. Bu yüzden dışarıda varyo + irtifa teyidi, içeride G/S takibi.`,
+    "Sıcak havada G/S":`Sıcakta gerçek irtifanız yüksektir, hatta beklenenden önce ulaşırsınız. DME yerine ibreyi izlemek bu yüzden doğru.`,
+    "Call-out sırası":`Sıra iş yükünü böler: önce lateral (LOC), sonra dikey (G/S), sonra konfigürasyon, en sonda stabilizasyon ve minimumlar.`,
+    "FAF / FAP: İkisi aynı şey değil":`Sınavda sık çıkar: FAF = konumu sabit bir fiks (NPA), FAP = hattı yakaladığınız yer (ILS).`,
+    "Stabilizasyon":`FAF'ta konfigürasyon tamam olmak zorunda değildir ama yavaşlama başlamış olmalıdır. Bu 1000/500 ft'e kadar tamamlanır.`,
+    "Step-down'u sürekli alçal":`Kademeli alçalmayı sürekli alçalmaya çevirmek yük azaltır ama "at or above" kuralını bozmaz; geçiş irtifasını sesli teyit etmek hata koruması sağlar.`,
+    "100 ft kuralı":`Işık görmek tek başına iniş izni değildir. 100 ft'te pist unsurları ya da kırmızı barlar yoksa pas geçilir.`,
+    "EASA yanal eleman şartı":`Sadece merkez hattı görmek yön bilgisi verir ama dönüklük/yükseklik hissi vermez. Crossbar yatay referans sağlar.`,
+    "Işıklara bakıp varyoyu unutma":`Örnek: GS 90 kt ise varyo yaklaşık 450 ft/dk. Dışarıya bakarken bu sayıyı taramanın içinde tutun.`,
+    "Varyo = GS × 5":`Örnek: 90 kt → 450 fpm, 100 kt → 500 fpm. Süzülüş açısı 3° olduğu için yatayda 1 NM'de ~300 ft inersiniz.`,
+    "Kerteriz düşmesi":`Örnek: 10° radyal değişimi 120 sn sürdüyse ve GS 90 kt ise mesafe = 120/10 × 90/60 = 18 NM.`,
+    "Yatış açıları":`Örnek: TAS 100 kt → standart yatış 17°, yarı standart ≈ 12°. Rate 1 dönüşü için pratik hesap.`,
+    "TAS tahmini":`Örnek: IAS 100 kt, 5000 ft → TAS ≈ 100 + 5 × 2 = 110 kt. Yaklaşık değerdir, hız hesaplarında yeterli.`,
+    "Gradyan çevirileri":`Örnek: %5 gradyan, GS 90 kt → ROC/ROD ≈ 450 fpm. %5 ≈ 2,85° (yaklaşık 3°).`,
+    "DME arkına giriş":`Örnek: GS 140 kt → 0,7 NM önce dönüşe başla. Hız arttıkça dönüş yarıçapı büyüdüğü için lead de büyür.`,
+    "VDP":`VDP, görsel alçalma noktasıdır; bu noktadan önce pisti görmeden normal açıyla inilemez. MDH ne kadar yüksekse VDP o kadar uzakta.`,
+    "Outbound süresi":`Süre yetmezse DME mesafesi kullanılır. 14.000 ft üstündeki 1,5 dk, yüksek irtifada hız arttığı içindir.`,
+    "Dönüş oranı":`Rate 1 = 3°/sn → 180° dönüş 60 sn sürer. Bu yüzden rüzgarsız holding bacakları 1'er dakikadır.`,
+    "+70 / −110 kuralı":`Ezber: standartta hat 70° sağa, 110° sola. Uçağın başı hangi dilimde ise o giriş. Bu sitedeki Holding sekmesiyle deneyebilirsiniz.`,
+    "Baş rüzgarında outbound dönüşü":`Amaç outbound'un kısa kalmasını (istasyona fazla yaklaşmayı) önlemektir; rüzgar/2 saniye eklenerek abeam mesafesi korunur.`,
+    "WCA × 3":`Örnek: inbound'da 5° WCA gerekiyorsa outbound'da 15° verilir; çünkü outbound'da rüzgarın yan etkisi iki dönüş boyunca sürer.`,
+    "Established":`"İbre ortada" yetmez: korunan sahada olmalısınız. Established olunmadan alçalmak mania kleransını bozabilir.`,
+    "Radar":`Vektörde ATC rüzgarı bilerek baş verir; kendi düzeltmenizi eklerseniz çift düzeltme yapıp hattan sapabilirsiniz.`,
+    "High to low, look out below":`Soğukta gösterilen irtifa gerçek irtifadan yüksektir. Soğuk ve yüksek basınç → altimetre sizi olduğundan yüksek gösterir.`,
+    "%4 kuralı":`Örnek: −10°C, ISA farkı yaklaşık 25°C. Her 10°C için %4 → MDA yüksekliği yaklaşık %10 artırılır (1000 ft yükseklik için ~100 ft).`,
+    "Oksijen limitleri":`10.000 ft bile uzun süre hipoksi riski taşır; özellikle gece görüşü bundan etkilenir.`
+    };
+    TIPS.push(
+    [`Pas geçme`,`Pas geçme kriterleri`,`DA/MDA'da görsel referans yoksa, stabilizasyon bozulursa, ATC pas geçin derse veya pilot emniyetli iniş yapılamayacağını düşünürse pas geçilir.`,`Dördünden biri yeterlidir. "Biraz daha bakayım" diye karar geciktirilmez; karar minimumda verilir.`],
+    [`Pas geçme`,`Üç segment ve gradyan`,`Pas geçme: Initial (MAPt→SOC), Intermediate (15°'den büyük dönüş yok), Final. Chart aksini yazmadıkça minimum gradyan %2,5.`,`Chart %3,5 isterse ROC = 3,5 × GS. GS 90 kt → ~315 fpm. Bunu brifingde uçağın performansıyla karşılaştırın.`],
+    [`Pas geçme`,`Circling'de pas geçme`,`Circling sırasında pist görüşü kaybedilirse hemen tırmanılır; ilk manevra iniş pistine doğru tırmanışlı dönüş olur ve pas geçme rotasına oturulur.`,`Pist görüşü kaybı genelde pisti yanda bırakmış olmanızdan olur; en kısa yoldan korunan sahaya dönmek amaçtır.`],
+    [`DME arkı`,`Düz bacak yöntemi`,`DME arkı sürekli dönüşle değil, 10°'lik baş değişimleri ve kısa düz bacaklarla uçulur. RMI ibresi kanat ucuna (abeam) yakın tutulur.`,`İbre kanat ucunun gerisine düşüp mesafe artıyorsa arkın içine 10° dönülür; ibre öne geçip mesafe azalıyorsa dışa bakılır.`],
+    [`DME arkı`,`Fix-to-fix: 3 soru`,`HSI'ı harita gibi kullanırken sırayla sorun: Büyük mil kaç? Ben neredeyim? Nereye gideceğim?`,`Son adım: iki nokta arasına ok çiz, oku HSI merkezine kaydır, okun gösterdiği başı track olarak uç.`],
+    [`VOR`,`CDI fonksiyonel testi`,`CRS butonu sola/sağa çevrilip 5° sapmada "ONE DOT (half scale)" görülür. 90°'den fazla çevirince TO/FROM bayrağı değişir.`,`Bu G1000 fonksiyon testidir. Resmi VOR doğruluğu testi VOT, yer veya hava kontrol noktalarıyla yapılır.`],
+    [`VOR`,`İstasyonu tanıma`,`VOR mors koduyla yayın yapar. Frekans yanında 3 harfli tanıtıcının belirmesi de teyit sayılır.`,`Ses düğmesi (VOL ID) basılı ve audio panelde NAV1/NAV2 seçili değilse mors duyulmaz; ayar %50 civarında olmalı.`],
+    [`ILS hazırlığı`,`NAV1/NAV2 dağılımı`,`NAV1 aktif: başlangıç VOR'u, NAV1 standby: ILS. DME ILS'ten alınacaksa kaynak NAV1 olmalı. Pas geçme VOR'u NAV2'ye bağlanır.`,`ILS frekansı aktif olunca HSI'da NAV1 yazısı LOC1'e döner ve G/S elması belirir; bu iki işaret sağlama yapar.`],
+    [`ILS`,`Outer marker ve son flap`,`Landing flaps, outer marker'a (1500 ft AAE veya pist başına 5 NM'den önce, hangisi önce gelirse) gelmeden set edilir.`,`"Hangisi önce" ifadesi pratikte uzak pistte 5 NM'yi belirleyici yapar.`],
+    [`Konfigürasyon`,`Circling konfigürasyonu`,`FAF'tan önce: C-172 için 10° flap, DA-40 için T/O flap, DA-42 için APP flap ve gear down.`,`Circling'de MDA'da yatay uçarsınız; flap/gear'ı MDA'ya inmeden hazırlamak iş yükünü azaltır.`]
+    );
+
+    const TIP_OVR = {
+    "FAF / FAP: İkisi aynı şey değil":[`FAF, hassas olmayan yaklaşmada son yaklaşmanın başladığı sabit bir noktadır (haritada Maltese Cross). FAP ise ILS'te süzülüş hattına bağlandığınız yerdir; haritada sabit bir nokta değildir.`,`Kısaca: FAF bir yer, FAP bir andır.`],
+    "MAPt'de MDA yanılgısı":[`CDFA'da MDA'ya inip düz gitmezsiniz. FAF'tan itibaren pist eşiğinin 50 ft üstüne sabit bir açıyla kesintisiz inersiniz. MAPt'e geldiğinizde MDA'da olmanız gerekmez.`,`Karışıklık buradan: eskiden "MDA'ya in, bekle" öğretilirdi. CDFA'da MDA bir bekleme irtifası değil, karar irtifasıdır.`],
+    "MDA bir taban irtifadır":[`NPA'da MDA'nın altına, pisti görmeden asla inilmez. Pas geçerken uçak biraz irtifa kaybeder (sarkma); bu yüzden minimuma 50 ft eklenir ve karar o irtifada verilir.`,`Sarkmayı düşünün: gaz verip burnu kaldırırken uçak bir an daha alçalır. 50 ft bu payı karşılar.`],
+    "VDP":[`VDP mesafesi yaklaşık MDH ÷ (açı × 100) NM'dir. Örnek: MDH 300 ft, açı 3° → 300 ÷ 300 = 1 NM, yani eşikten yaklaşık 1 NM önce.`,`VDP'den önce pisti göremezseniz normal açıyla inemezsiniz.`],
+    "Established":[`Established, ibrenin ortaya gelmesi değil, uçağın o yola gerçekten oturmasıdır. Localizer için CDI 1 dot içinde, VOR için 5° (half scale) içinde, NDB için ±5° içinde olmalı.`,`Bu şart sağlanmadan alçalma başlamaz. İbrenin ilk kez merkeze gelmesi "oturdu" demek değildir.`],
+    "Glide slope 10 NM":[`Glide slope sinyali 10 NM'e kadar güvenilirdir. Daha uzaktaysanız ibre ortaya gelse bile ona güvenip inmeyin; hesapladığınız varyoyla inin, 10 NM içinde ibreyi doğrulayıp yakalayın.`,`Uzakta ibre sahte hat gösterebilir (false glide slope). Yanlış hatta inmek tehlikelidir.`],
+    "+70 / −110 kuralı":[`Standart holdingte inbound hattında uçtuğunuzu düşünün. Başınızdan sağa 70° ve sola 110° iki çizgi çizin. Gerçek başınız 70°'lik dilimdeyse teardrop, 110°'lik dilimdeyse paralel, kalan 180°'de direkt giriş yapılır.`,`Holding sekmesindeki P-T-D sektörleri aynı şeydir: uçağı sektörde görün, girişi söyleyin.`],
+    "Fix-to-fix: 3 soru":[`HSI'ı harita gibi düşünün: 1) Hangi mesafe daha büyük? (HSI'ın yarıçapı bu olur) 2) Ben neredeyim? 3) Nereye gideceğim? İki noktayı okla birleştirip oku HSI merkezine kaydırın; okun gösterdiği başı uçun.`,`Amaç, tek bakışta "hangi başa dönmeliyim?" sorusuna cevap bulmaktır.`],
+    "Varyo = GS × 5":[`3°'lik süzülüş için varyoyu yer hızının 5 katı alın. 90 kt → 450 ft/dk, 100 kt → 500 ft/dk.`,`Neden 5? 60 kt'ta 1 NM bir dakikada gidilir ve 3°'de 1 NM'de yaklaşık 300 ft inilir; yani 60 kt için 300 ft/dk. Bu orantı GS × 5 verir.`]
+    };
+    TIPS.push(
+    [`NDB`,`NDB ve Locator farkı`,`NDB 200–1750 kHz arasında AM yayın yapar (Avrupa'da genelde 225–455 kHz). NDB güçlüdür, 50–100 NM'den alınır. Locator zayıftır (10–50 W, 15–25 NM) ve pist hattına yakın kurulup son yaklaşmada kullanılır.`,`Pratikte: uzaktan seyrüsefer = NDB, pistin hemen önünde yaklaşma yardımcısı = Locator.`],
+    [`NDB`,`NDB neden yanıltır?`,`NDB doğruluğu ±5°'dir. Gece, orajlı havada, çevredeki manyetik alanlarda ve aynı frekansta daha güçlü bir istasyon varsa ibre yanıltabilir.`,`NDB'ye körü körüne güvenmeyin: mors kodunu dinleyin, ibrenin kararlı olup olmadığına bakın, başka bir referansla çapraz kontrol edin.`],
+    [`VOR`,`VOR neden NDB'den daha güvenilir?`,`VOR, VHF kullandığı için kıyı yansımasından, yıldırımdan ve geceden çok daha az etkilenir. ICAO'nun kabul ettiği toplam VOR hatası ±5°'dir.`,`NDB sadece istasyonu gösterir, VOR belirli bir radyal (hat) verir. Bu yüzden hat tutmak VOR'da çok daha kolaydır.`],
+    [`VOR`,`VOR türleri`,`CVOR, DVOR ve BVOR vardır. Kokpit göstergeleri aynıdır; fark yer istasyonundadır. BVOR ayrıca ses yayını yapar (ATIS ve meteorolojik bilgi).`,`Uçuşta fark etmezsiniz; sınavda sorulabilecek bir ayrıntıdır.`],
+    [`Yaklaşma`,`Step-down mı, CDFA mı?`,`NPA'da iki yol vardır: MDA'ya hemen inip MAPt'e kadar yatay gitmek (step-down) ya da FAF'tan eşiğin 50 ft üstüne sabit açıyla kesintisiz inmek (CDFA). ICAO ikincisini teşvik eder.`,`Step-down'da irtifa kaybedip tekrar yatay uçarsınız, CDFA'da tek hat vardır. CDFA daha stabil, daha az iş yükü, daha az yakıt ve daha az gürültü demektir.`],
+    [`Yaklaşma`,`VDP nedir?`,`VDP, pisti görseniz bile normal süzülüşle inebileceğiniz en son noktadır. Kabaca NPA hattıyla 3°'lik hassas hattın kesiştiği yerdir.`,`VDP'den sonra pisti ilk kez görürseniz süzülüş çok dik olur; bu durumda inmeye çalışmak yerine pas geçmek gerekir.`],
+    [`Holding`,`Standart ve non-standart`,`Standart holding fiks sonrası sağa, non-standart sola dönüşlerle uçulur. İki adet 180°'lik dönüş vardır; inbound ve outbound bacaklar birbirine paraleldir.`,`Hatırlatma: inbound fikse geliş yönünüzdür, outbound onun tersidir.`],
+    [`Holding`,`ABEAM noktası`,`ABEAM, outbound bacakta fikse tam 90° dik konumda olduğunuz noktadır. Zamanlama ve rüzgar kontrolünde referans olarak kullanılır.`,`Abeam'da bearing ibresi kanat ucunu gösterir.`]
+    );
+
+    function showDailyTip() {
+        let seen = [];
+        try { seen = JSON.parse(localStorage.getItem('fa_tips_seen') || '[]'); } catch (e) {}
+        let pool = TIPS.map((_, i) => i).filter(i => !seen.includes(i));
+        if (!pool.length) { seen = []; pool = TIPS.map((_, i) => i); }
+        const cur = state.tipIdx;
+        if (pool.length > 1 && cur !== undefined) pool = pool.filter(i => i !== cur);
+        const i = pool[Math.floor(Math.random() * pool.length)];
+        state.tipIdx = i; seen.push(i);
+        try { localStorage.setItem('fa_tips_seen', JSON.stringify(seen)); } catch (e) {}
+        let t = TIPS[i]; const ov = TIP_OVR[t[1]]; if (ov) t = [t[0], t[1], ov[0], ov[1]];
+        document.getElementById('tipCat').textContent = t[0];
+        document.getElementById('tipTitle').textContent = t[1];
+        document.getElementById('tipText').textContent = t[2];
+        const note = t[3] || TIP_NOTES[t[1]] || '', nb = document.getElementById('tipNote');
+        nb.classList.toggle('hidden', !note); nb.textContent = note ? '📝 Yorum: ' + note : '';
+        document.getElementById('tipMeta').textContent = `Bilgi ${seen.length}/${TIPS.length} • Kaynak: Efe Instrument Notları / IR Döküman • Operasyonda resmi dokümanlarla doğrulayın`;
+    }
+
+    // ========== METAR / TAF ==========
+    const MW_I = {'-':'hafif ','+':'şiddetli ','VC':'meydan çevresinde '};
+    const MW_D = {MI:'sığ ',BC:'parçalı ',PR:'kısmi ',DR:'alçaktan savrulan ',BL:'savrulan ',SH:'sağanak ',TS:'gök gürültülü ',FZ:'donan '};
+    const MW_P = {DZ:'çise',RA:'yağmur',SN:'kar',SG:'kar tanesi',PL:'buz tanesi',GR:'dolu',GS:'küçük dolu',UP:'bilinmeyen yağış',BR:'hafif sis/mist (görüş 1–5 km)',FG:'sis (görüş <1000 m)',FU:'duman',VA:'volkanik kül',DU:'yaygın toz',SA:'kum',HZ:'kuru pus (haze)',PO:'toz/kum girdabı',SQ:'bora',FC:'hortum',SS:'kum fırtınası',DS:'toz fırtınası'};
+    const MW_RE = /^(\+|-|VC)?(MI|BC|PR|DR|BL|SH|TS|FZ)?((?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)+)$/;
+    const MC = {FEW:'az bulutlu (1–2 okta)',SCT:'dağınık (3–4 okta)',BKN:'parçalı (5–7 okta) – TAVAN sayılır',OVC:'kapalı (8 okta) – TAVAN sayılır'};
+    const mT = (s) => s[0] === 'M' ? -parseInt(s.slice(1), 10) : parseInt(s, 10);
+    function metarWx(m) {
+        const ph = m[3].match(/../g).map(p => MW_P[p]).join(' + ');
+        return (MW_I[m[1]] || '') + (MW_D[m[2]] || '') + ph;
+    }
+    function metarExplain(t, idx) {
+        let m;
+        const F = {
+            METAR: 'Rutin hava raporu (genelde 30 dk veya 1 saatte bir)', SPECI: 'Özel rapor: önemli değişimde saat dışı yayınlanır',
+            TAF: 'Meydan tahmini (Terminal Aerodrome Forecast)', AMD: 'Düzeltilmiş tahmin (Amended)', COR: 'Düzeltilmiş rapor (Corrected)',
+            AUTO: 'Otomatik istasyon, gözlemci yok', NIL: 'Rapor yok', CAVOK: 'Ceiling And Visibility OK: görüş ≥10 km, 5000 ft altında bulut yok (CB/TCU hariç), önemli hava olayı yok',
+            NSC: 'Önemli bulut yok (CB/TCU yok, 5000 ft altında bulut yok)', SKC: 'Gökyüzü açık', NCD: 'Otomatik istasyon bulut tespit etmedi', NSW: 'Önemli hava olayı yok/sona eriyor',
+            BECMG: 'Kalıcı değişim başlıyor (becoming)', TEMPO: 'Geçici dalgalanma (her seferinde <1 saat, toplamda sürenin yarısından az)', NOSIG: 'Önümüzdeki 2 saatte önemli değişiklik beklenmiyor',
+            RMK: 'Remarks: ek bilgi (ICAO standardı dışı olabilir)', TREND: 'Trend tahmini (2 saatlik)', '9999': '10 km veya daha fazla görüş', '0000': '50 m altı görüş'
+        };
+        if (F[t]) return F[t];
+        if (m = t.match(/^(\d{2})(\d{2})(\d{2})Z$/)) return `Yayın zamanı: ayın ${+m[1]}. günü, ${m[2]}:${m[3]} UTC`;
+        if (m = t.match(/^(\d{2})(\d{2})\/(\d{2})(\d{2})$/)) return `TAF geçerlilik: ${+m[1]}. gün ${m[2]}:00Z → ${+m[3]}. gün ${m[4]}:00Z`;
+        if (m = t.match(/^FM(\d{2})(\d{2})(\d{2})$/)) return `Şu andan itibaren: ${+m[1]}. gün ${m[2]}:${m[3]}Z (önceki koşullar biter)`;
+        if (m = t.match(/^(FM|TL|AT)(\d{4})$/)) return ({FM:'başlangıç',TL:'bitiş (till)',AT:'tam saat'})[m[1]] + ` ${m[2].slice(0,2)}:${m[2].slice(2)}Z`;
+        if (m = t.match(/^PROB(30|40)$/)) return `%${m[1]} olasılıkla (izleyen grup için)`;
+        if (m = t.match(/^T([XN])(M?\d{2})\/(\d{2})(\d{2})Z$/)) return `${m[1]==='X'?'En yüksek':'En düşük'} sıcaklık ${mT(m[2])}°C, ${+m[3]}. gün ${m[4]}:00Z`;
+        if (m = t.match(/^(VRB|\d{3})(\d{2,3})(?:G(\d{2,3}))?(KT|MPS)$/)) {
+            const u = m[4] === 'KT' ? 'kt' : 'm/s';
+            if (+m[2] === 0) return 'Rüzgar sakin';
+            return `${m[1]==='VRB'?'Değişken yönden':m[1]+'° yönünden (geldiği yön)'} ${+m[2]} ${u}${m[3]?', hamle '+ +m[3]+' '+u:''}`;
+        }
+        if (m = t.match(/^(\d{3})V(\d{3})$/)) return `Rüzgar yönü ${m[1]}° ile ${m[2]}° arasında değişiyor`;
+        if (/^\d{4}$/.test(t)) return `Görüş ${+t} m`;
+        if (m = t.match(/^(FEW|SCT|BKN|OVC)(\d{3}|\/\/\/)(CB|TCU)?$/)) return `${MC[m[1]]}, taban ${m[2]==='///'?'bilinmiyor':(+m[2]*100)+' ft AAL'}${m[3]==='CB'?' – KÜMÜLONİMBÜS (CB)':m[3]==='TCU'?' – kuleli kümülüs (TCU)':''}`;
+        if (m = t.match(/^VV(\d{3}|\/\/\/)$/)) return `Dikey görüş ${m[1]==='///'?'bilinmiyor':(+m[1]*100)+' ft'} (gökyüzü seçilemiyor, genelde sis) – TAVAN sayılır`;
+        if (m = t.match(/^(M?\d{2})\/(M?\d{2})?$/)) { const a = mT(m[1]), b = m[2] ? mT(m[2]) : null; return `Sıcaklık ${a}°C${b===null?'':', çiğ noktası '+b+'°C (fark '+(a-b)+'°C'+(a-b<=3?' → sis/bulut riski':'')+')'}`; }
+        if (m = t.match(/^Q(\d{4})$/)) return `QNH ${+m[1]} hPa (altimetre ayarı)`;
+        if (m = t.match(/^A(\d{4})$/)) return `Altimetre ayarı ${m[1].slice(0,2)}.${m[1].slice(2)} inHg`;
+        if (m = t.match(/^R(\d{2}[LCR]?)\/([PM])?(\d{4})([UDN])?$/)) return `Pist ${m[1]} RVR: ${m[2]==='P'?'>':m[2]==='M'?'<':''}${+m[3]} m${m[4]?' ('+({U:'artıyor',D:'azalıyor',N:'değişmiyor'})[m[4]]+')':''}`;
+        if (m = t.match(/^WS(\d{3})\/(\d{3})(\d{2})KT$/)) return `Rüzgar makaslaması (wind shear): ${+m[1]*100} ft'te ${m[2]}°/${+m[3]} kt`;
+        if (m = t.match(/^RE(.+)$/) && t.match(/^RE(\+|-|VC)?(MI|BC|PR|DR|BL|SH|TS|FZ)?((?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)+)$/)) { const r = t.slice(2).match(MW_RE); return 'Son 1 saatte biten: ' + metarWx(r); }
+        if (m = t.match(MW_RE)) return metarWx(m);
+        if (idx <= 2 && /^[A-Z]{4}$/.test(t)) return `Meydan ICAO kodu (${t})`;
+        return null;
+    }
+    function metarDecode() {
+        const raw = document.getElementById('metarInput').value.toUpperCase().replace(/=/g, ' ').trim();
+        const out = document.getElementById('metarOut');
+        if (!raw) { out.innerHTML = '<div style="color:var(--text-muted)">Henüz rapor girilmedi. Bir örnek seçin ya da kendi METAR/TAF\'ınızı yapıştırın.</div>'; return; }
+        const toks = raw.split(/\s+/);
+        let ceil = null, vis = null, rows = '';
+        toks.forEach((t, i) => {
+            const d = metarExplain(t, i);
+            let m;
+            if ((m = t.match(/^(BKN|OVC)(\d{3})/)) || (m = t.match(/^VV(\d{3})$/))) { const h = +m[m.length-1]*100; if (ceil === null || h < ceil) ceil = h; }
+            if (/^\d{4}$/.test(t) && vis === null && i > 2) vis = t === '9999' ? 10000 : +t;
+            const esc = t.replace(/[<>&]/g, '');
+            rows += `<div class="flex gap-3 py-1.5 border-b" style="border-color:var(--border);"><span class="font-mono font-bold shrink-0 w-28 break-all ${d?'text-avionics-cyan':'text-avionics-amber'}">${esc}</span><span style="color:${d?'var(--text)':'var(--amber)'}">${d || 'Tanınmadı (yazım hatası ya da yerel/özel grup olabilir)'}</span></div>`;
+        });
+        const sum = [`Tavan: ${ceil === null ? 'yok (BKN/OVC yok)' : ceil + ' ft AAL'}`, vis === null ? 'Görüş: CAVOK/belirtilmemiş' : `İlk görüş grubu: ${vis >= 10000 ? '≥10 km' : vis + ' m'}`].join(' • ');
+        out.innerHTML = `<div class="font-mono text-[11px] font-bold mb-2 text-avionics-emerald">${sum}</div>` + rows;
+    }
+    const METAR_SAMPLES = [
+        'METAR LTFE 201020Z 32008KT 9999 FEW040 SCT100 18/09 Q1016 NOSIG',
+        'METAR LTBJ 200850Z 18012G24KT 140V220 4000 -RA BR BKN008 OVC015 12/11 Q1004 BECMG 2500 RA',
+        'TAF LTFE 200500Z 2006/2106 33010KT CAVOK TEMPO 2009/2013 4000 SHRA BKN025CB BECMG 2018/2020 VRB03KT 9999 NSC PROB30 2100/2106 1500 BR'
+    ];
+    function metarSample(i) { document.getElementById('metarInput').value = i < 0 ? '' : METAR_SAMPLES[i]; metarDecode(); }
+    function metarSend() { if (mq.cur) { document.getElementById('metarInput').value = mq.cur.text; metarDecode(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
+
+    const METAR_GLOSS = [
+        ['CAVOK','Görüş ≥10 km, 5000 ft altında bulut yok, CB/TCU yok, önemli hava olayı yok'],['NSC','Önemli bulut yok'],['SKC','Gökyüzü açık'],['NCD','Bulut tespit edilmedi (otomatik)'],['NSW','Önemli hava olayı yok'],
+        ['FEW / SCT','1–2 okta / 3–4 okta bulut'],['BKN / OVC','5–7 okta / 8 okta bulut (tavan sayılır)'],['VV','Dikey görüş (gök seçilemiyor)'],['CB / TCU','Kümülonimbus / kuleli kümülüs'],
+        ['BECMG','Kalıcı değişim'],['TEMPO','Geçici dalgalanma'],['NOSIG','Önemli değişiklik beklenmiyor'],['PROB30/40','%30/%40 olasılık'],['FM','…zamanından itibaren'],['TL / AT','…zamanına kadar / tam o zaman'],
+        ['RA / DZ','Yağmur / çise'],['SN / SG','Kar / kar tanesi'],['GR / GS','Dolu / küçük dolu'],['FG','Sis (<1000 m)'],['BR','Hafif sis, mist (1–5 km)'],['HZ','Kuru pus (haze)'],['FU','Duman'],['DU / SA','Toz / kum'],
+        ['TS','Gök gürültülü fırtına'],['SH','Sağanak'],['FZ','Donan (FZRA = donan yağmur)'],['MI / BC / PR','Sığ / parçalı / kısmi (sis)'],['DR / BL','Alçaktan savrulan / savrulan'],['VC','Meydan çevresinde (8–16 km)'],['+ / −','Şiddetli / hafif'],
+        ['SQ / FC','Bora / hortum'],['VA','Volkanik kül'],['KT / MPS','Knot / metre-saniye'],['VRB','Değişken rüzgar yönü'],['G','Hamle (gust)'],['Q / A','QNH hPa / altimetre inHg'],['M','Eksi (M05 = −5°C)'],
+        ['RVR','Pist görüş mesafesi (R27/0600 = pist 27, 600 m)'],['WS','Rüzgar makaslaması'],['RE','Son 1 saatte biten hava olayı'],['RMK','Ek bilgi'],['AUTO','Otomatik rapor'],['COR / AMD','Düzeltilmiş rapor / düzeltilmiş tahmin'],
+        ['SPECI','Özel rapor'],['9999','10 km veya üstü görüş'],['UTC / Z','Zulu zamanı'],['AAL','Meydan seviyesinden yükseklik'],['TX / TN','TAF maks / min sıcaklık']
+    ];
+    function metarGlossary() {
+        const q = document.getElementById('metarSearch').value.trim().toLowerCase();
+        document.getElementById('metarGloss').innerHTML = METAR_GLOSS.filter(g => !q || g[0].toLowerCase().includes(q) || g[1].toLowerCase().includes(q))
+            .map(g => `<div class="flex gap-3 py-1.5 border-b text-xs" style="border-color:var(--border);"><span class="font-mono font-bold text-avionics-cyan shrink-0 w-24">${g[0]}</span><span style="color:var(--text)">${g[1]}</span></div>`).join('') || '<div class="text-xs" style="color:var(--text-muted)">Sonuç yok.</div>';
+    }
+
+    const mq = { cur: null, answered: false, score: 0, total: 0 };
+    const mqR = (n) => Math.floor(Math.random() * n);
+    const mqPick = (a) => a[mqR(a.length)];
+    function metarQuiz() {
+        const st = mqPick(['LTFE','LTBJ','LTAI','LTBA','LTCC','LTAC','LTFM','LTBD']);
+        const dir = ((mqR(36) + 1) * 10) % 360 || 360, spd = 3 + mqR(25), gust = spd > 14 && Math.random() < 0.5 ? spd + 5 + mqR(8) : 0;
+        const vis = mqPick([9999, 9999, 8000, 6000, 4000, 2500, 1200, 800]), cav = vis === 9999 && Math.random() < 0.4;
+        const wx = cav ? '' : vis < 1000 ? 'FG' : vis < 5000 ? mqPick(['BR','-RA','RA']) : vis < 9999 ? mqPick(['HZ','-DZ','']) : '';
+        const layers = cav ? [] : [...new Set([mqPick([4,8,12,15,20,25,30,40]), mqPick([45,60,80,100])])].sort((a, b) => a - b).map((h, i) => (i ? mqPick(['BKN','OVC']) : mqPick(['FEW','SCT','BKN'])) + String(h).padStart(3, '0'));
+        const t = -3 + mqR(33), dw = t - mqR(8), qnh = 1003 + mqR(27);
+        const f2 = (n) => String(n).padStart(2, '0'), tm = (n) => (n < 0 ? 'M' : '') + f2(Math.abs(n));
+        const text = ['METAR', st, f2(1 + mqR(28)) + f2(mqR(24)) + mqPick(['20','50']) + 'Z', String(dir).padStart(3, '0') + f2(spd) + (gust ? 'G' + f2(gust) : '') + 'KT',
+            cav ? 'CAVOK' : String(vis).padStart(4, '0'), wx, ...layers, tm(t) + '/' + tm(dw), 'Q' + qnh].filter(Boolean).join(' ');
+        const Q = [
+            ['Rüzgar hızı kaç knot?', spd, (v) => v + ' kt', 1], ['Rüzgar hangi yönden esiyor?', dir, (v) => String(((v + 359) % 360) + 1).padStart(3, '0') + '°', 20],
+            ['QNH kaç hPa?', qnh, (v) => v + ' hPa', 3], ['Sıcaklık ile çiğ noktası arasındaki fark kaç °C?', t - dw, (v) => Math.max(0, v) + ' °C', 1]
+        ];
+        if (!cav) { Q.push(['Görüş kaç metre?', vis, (v) => v + ' m', 0]); if (layers.length) Q.push(['En alçak bulut tabanı kaç ft?', +layers[0].slice(3, 6) * 100, (v) => Math.max(100, v) + ' ft', 400]); }
+        const q = mqPick(Q), opts = new Set([q[1]]);
+        const alts = q[0].startsWith('Görüş') ? [9999, 8000, 6000, 4000, 2500, 1200, 800, 500, 3000] : null;
+        let guard = 0;
+        while (opts.size < 4 && guard++ < 80) { const v = alts ? mqPick(alts) : q[1] + (mqR(2) ? 1 : -1) * (mqR(4) + 1) * (q[3] || 1); if (v > 0 || q[0].startsWith('Sıc')) opts.add(v); }
+        mq.cur = { text, ans: q[1], fmt: q[2] }; mq.answered = false;
+        document.getElementById('mqMetar').textContent = text;
+        document.getElementById('mqQ').textContent = q[0];
+        document.getElementById('mqFb').textContent = '';
+        const arr = [...opts].sort(() => Math.random() - 0.5);
+        document.getElementById('mqOpts').innerHTML = arr.map(v => `<button data-v="${v}" onclick="metarAnswer(${v}, this)" class="mq-opt py-2 rounded-lg border font-mono text-sm font-bold" style="border-color:var(--border);color:var(--text);">${q[2](v)}</button>`).join('');
+    }
+    function metarAnswer(v, btn) {
+        if (mq.answered) return;
+        mq.answered = true; mq.total++;
+        const ok = v === mq.cur.ans; if (ok) mq.score++;
+        document.querySelectorAll('.mq-opt').forEach(b => { if (+b.dataset.v === mq.cur.ans) b.style.borderColor = 'var(--emerald)'; });
+        if (!ok) btn.style.borderColor = 'var(--crimson)';
+        document.getElementById('mqScore').textContent = `Skor: ${mq.score} / ${mq.total}`;
+        const fb = document.getElementById('mqFb');
+        fb.style.color = ok ? 'var(--emerald)' : 'var(--crimson)';
+        fb.textContent = ok ? 'DOĞRU!' : `HATALI. Doğru cevap: ${mq.cur.fmt(mq.cur.ans)}`;
+    }
+    function metarInit() { metarDecode(); metarGlossary(); metarQuiz(); }
+
     // ========== INIT ==========
     window.addEventListener('DOMContentLoaded', () => {
         applyTheme('dark');
@@ -1398,6 +1714,8 @@
         recalculateWcaTool();
         recalculateVarioTool();
         generateVarioQuiz();
+        showDailyTip();
+        metarInit();
     });
 </script>
 </body>
