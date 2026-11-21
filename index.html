@@ -59,6 +59,7 @@
             <button id="tabWca" onclick="switchTab('wca')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">WCA</button>
             <button id="tabVario" onclick="switchTab('vario')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">VARYO</button>
             <button id="tabMetar" onclick="switchTab('metar')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">METAR/TAF</button>
+            <button id="tabPerf" onclick="switchTab('perf')" class="px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-semibold transition-all tab-inactive whitespace-nowrap">PERFORMANS</button>
         </nav>
         <button onclick="toggleTheme()" title="Tema" class="p-2 rounded-xl border border-slate-800 transition-colors hover:border-slate-700" style="background-color:var(--surface); color:var(--amber);">
             <svg id="themeIconDark" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -113,6 +114,12 @@
             <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">METAR / TAF</h2>
             <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Raporları çözümleyin, kısaltmaları öğrenin, quiz ile pekiştirin.</p>
             <button class="px-5 py-2 rounded-lg bg-avionics-cyan font-mono font-bold text-xs" style="color:var(--bg)">OKUMAYI ÖĞREN</button>
+        </div>
+        <div onclick="switchTab('perf')" class="avionics-panel home-card rounded-2xl p-6 flex flex-col items-center text-center border-2" style="border-color:var(--border);">
+            <div class="w-14 h-14 rounded-full bg-avionics-amber/10 flex items-center justify-center mb-4 text-2xl">📈</div>
+            <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">PERFORMANS</h2>
+            <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Tırmanış gradyanı: %, ft/NM, gereken varyo ve çizim.</p>
+            <button class="px-5 py-2 rounded-lg bg-avionics-amber font-mono font-bold text-xs" style="color:var(--bg)">GRADYAN HESAPLA</button>
         </div>
     </div>
 </main>
@@ -685,6 +692,27 @@
     </section>
 </main>
 
+<main id="viewPerf" role="tabpanel" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <section class="lg:col-span-5 avionics-panel rounded-2xl p-5 flex flex-col gap-3">
+        <div><h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">TIRMANIŞ GRADYANI</h2>
+        <p class="text-xs mt-0.5" style="color:var(--text-muted)">Yerden (0 ft) başlayan tırmanış için gradyanı hesaplayın. Neyi biliyorsanız onu seçin.</p></div>
+        <div id="perfModes" class="grid grid-cols-1 gap-1.5 font-mono text-[11px] font-semibold"></div>
+        <div id="perfFields" class="flex flex-col gap-2"></div>
+    </section>
+    <section class="lg:col-span-7 avionics-panel rounded-2xl p-5 flex flex-col gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono">
+            <div class="rounded-xl p-3 border" style="border-color:var(--cyan);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">GRADYAN</div><div id="perfPct" class="text-xl font-bold text-avionics-cyan">-</div></div>
+            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">FT / NM</div><div id="perfFtNm" class="text-xl font-bold" style="color:var(--text)">-</div></div>
+            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">VARYO (ROC)</div><div id="perfRoc" class="text-xl font-bold text-avionics-amber">-</div></div>
+            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">AÇI</div><div id="perfAngle" class="text-xl font-bold" style="color:var(--text)">-</div></div>
+        </div>
+        <div id="perfSvg"></div>
+        <div id="perfPlan" class="font-mono text-xs" style="color:var(--text-muted)"></div>
+        <details open><summary class="font-mono text-[11px] font-bold uppercase tracking-wider cursor-pointer mb-1.5" style="color:var(--text)">NASIL HESAPLANIR?</summary>
+            <div id="perfSteps" class="space-y-1.5 font-mono text-[11px]" style="color:var(--text)"></div></details>
+    </section>
+</main>
+
 <script>
     const IS_FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     const state = {
@@ -693,7 +721,7 @@
         timerInterval: null, questionStartTime: 0, correctTimeout: null
     };
 
-    const TABS = ['home', 'reciprocal', 'holding', 'wca', 'vario', 'metar'];
+    const TABS = ['home', 'reciprocal', 'holding', 'wca', 'vario', 'metar', 'perf'];
     function switchTab(tab) {
         state.activeTab = tab;
         TABS.forEach(t => {
@@ -1542,6 +1570,21 @@
     [`Holding`,`ABEAM noktası`,`ABEAM, outbound bacakta fikse tam 90° dik konumda olduğunuz noktadır. Zamanlama ve rüzgar kontrolünde referans olarak kullanılır.`,`Abeam'da bearing ibresi kanat ucunu gösterir.`]
     );
 
+    TIPS.push(
+    [`C172`,`Tırmanış hızı yükseldikçe düşer`,`C172'de flaps up tırmanışta hız deniz seviyesinde 74 KIAS, 12.000 ft'te 72 KIAS'tır. Yükseldikçe sadece 2 kt değişir.`,`Bu hızlar en iyi tırmanış oranı (Vy) civarıdır. Engel için kullanılan Vx daha yavaştır ve daha dik gradyan verir, ama bu tabloda yoktur.`],
+    [`C172`,`Yükseklikte tırmanış oranı üçte bire iner`,`Tabloda tırmanış oranı deniz seviyesinde 730 fpm iken 12.000 ft'te 220 fpm'e düşer.`,`Aynı SID gradyanı kış sabahı alçak bir meydanda rahat tutturulurken yüksek ve sıcak bir meydanda tutturulamayabilir.`],
+    [`C172`,`Sıcaklık düzeltmesi`,`Standart sıcaklığın her 10°C üstü için tırmanış süresi, yakıt ve mesafe %10 artırılır.`,`Sıcak havada hava inceldiği için tırmanış yavaşlar. Performans sekmesi bunu tırmanış oranını 1,1'e bölerek uygular.`],
+    [`C172`,`Kalkış için ayrı yakıt payı`,`Tablodaki yakıt yalnızca tırmanış yakıtıdır. Motor çalıştırma, taksi ve kalkış için ayrıca 1,4 galon eklenir.`,`Yakıt planında bu 1,4 galonu atlarsanız tırmanış sonunda hesapladığınızdan az yakıtınız kalır.`],
+    [`C172`,`Mixture ve tablo`,`3000 ft üzerinde maksimum RPM için mixture fakirleştirilir (lean). Tablo bu varsayımla hazırlanmıştır.`,`Yüksekte zengin karışımla tırmanırsanız tablodaki tırmanış oranına ulaşamazsınız.`],
+    [`C172`,`Tablodaki mesafe rüzgarsızdır`,`Tırmanış mesafeleri sıfır rüzgar için verilir.`,`Baş rüzgarında yer üzerinde daha kısa mesafe alırsınız, bu yüzden gradyan artar. Arka rüzgarda tersi olur.`],
+    [`Gradyan`,`% ile ft/NM dönüşümü`,`%1 gradyan yaklaşık 61 ft/NM'dir. %3,3 yaklaşık 200 ft/NM, %5 yaklaşık 304 ft/NM eder.`,`Chart'ta ft/NM yazıyorsa 61'e bölerek yüzdeyi bulabilirsiniz.`],
+    [`Gradyan`,`Gereken ROC = % × GS`,`Gereken tırmanış oranı (fpm) yaklaşık gradyan (%) × yer hızı (kt)'dir. %5, 90 kt → 450 fpm.`,`Yaklaşık %1'lik bir hata içerir; planlama ve sınav için yeterlidir.`],
+    [`Gradyan`,`Standart kalkış gradyanı %3,3`,`Aksi belirtilmedikçe standart kalkış tırmanış gradyanı %3,3'tür (ICAO).`,`SID daha dik gradyan isterse chart'ta yazar. Uçağınız yapamıyorsa o SID uçulamaz; farklı rota veya prosedür istemeniz gerekir.`],
+    [`Gradyan`,`Baş rüzgarı gradyanı artırır`,`Aynı tırmanış oranı ve hızla, baş rüzgarında yer hızı düşer ve gradyan artar. Arka rüzgarda gradyan azalır.`,`Örnek: 600 fpm, GS 90 kt → yaklaşık %6,6. Arka rüzgarla GS 110 kt olursa yaklaşık %5,4.`],
+    [`Hava`,`ISA sıcaklığı`,`ISA'da sıcaklık deniz seviyesinde 15°C'dir ve her 1000 ft'te yaklaşık 2°C düşer.`,`Tabloda 12.000 ft'te −9°C yazmasının sebebi budur: 15 − 24 = −9.`],
+    [`Hesap`,`Tırmanışta yer hızı nasıl bulunur?`,`TAS, KIAS'tan her 1000 ft için yaklaşık %2 fazladır. Yer hızı kabaca TAS − baş rüzgarıdır.`,`Gerçek uçuşta GPS yer hızını kullanmak daha doğrudur. Bu iki kural sadece planlama içindir.`]
+    );
+
     function showDailyTip() {
         let seen = [];
         try { seen = JSON.parse(localStorage.getItem('fa_tips_seen') || '[]'); } catch (e) {}
@@ -1558,7 +1601,7 @@
         document.getElementById('tipText').textContent = t[2];
         const note = t[3] || TIP_NOTES[t[1]] || '', nb = document.getElementById('tipNote');
         nb.classList.toggle('hidden', !note); nb.textContent = note ? '📝 Yorum: ' + note : '';
-        document.getElementById('tipMeta').textContent = `Bilgi ${seen.length}/${TIPS.length} • Kaynak: Efe Instrument Notları / IR Döküman • Operasyonda resmi dokümanlarla doğrulayın`;
+        document.getElementById('tipMeta').textContent = `Bilgi ${seen.length}/${TIPS.length} • Kaynak: eğitim notları, IR Döküman ve C172 performans tablosu • Operasyonda resmi dokümanlarla doğrulayın`;
     }
 
     // ========== METAR / TAF ==========
@@ -1691,6 +1734,44 @@
     }
     function metarInit() { metarDecode(); metarGlossary(); metarQuiz(); }
 
+    // ========== TIRMANIŞ GRADYANI ==========
+    const PERF_MODES = [
+        { t: 'Varyo ve yer hızı biliyorum → gradyan', f: [['pRoc','Tırmanış oranı (varyo)','fpm',500],['pGs','Yer hızı (GS)','kt',90]] },
+        { t: 'Gradyan ve yer hızı biliyorum → gereken varyo', f: [['pPct','Gradyan','%',5],['pGs','Yer hızı (GS)','kt',90]] },
+        { t: 'İrtifa ve mesafe biliyorum → gradyan', f: [['pAlt','Kazanılacak irtifa (0 ft\'den)','ft',1000],['pDist','Mesafe','NM',5],['pGs','Yer hızı (GS)','kt',90]] }
+    ];
+    let perfMode = 0;
+    function perfSetMode(i) { perfMode = i; perfInit(); }
+    function perfInit() {
+        document.getElementById('perfModes').innerHTML = PERF_MODES.map((m, i) => `<button onclick="perfSetMode(${i})" class="text-left px-3 py-2 rounded-lg border" style="border-color:${i === perfMode ? 'var(--cyan)' : 'var(--border)'};color:${i === perfMode ? 'var(--cyan)' : 'var(--text-muted)'}">${m.t}</button>`).join('');
+        document.getElementById('perfFields').innerHTML = PERF_MODES[perfMode].f.map(f => `<label class="flex items-center justify-between gap-3 rounded-xl p-3 border text-xs font-mono" style="border-color:var(--border);background-color:var(--bg);color:var(--text)"><span>${f[1]}</span><span class="flex items-center gap-1"><input id="${f[0]}" type="number" value="${f[3]}" min="0" step="any" oninput="perfCalc()" class="w-24 text-right rounded-lg px-2 py-1 outline-none border font-bold text-avionics-cyan" style="background-color:var(--elevated);border-color:var(--border)"><span style="color:var(--text-muted)">${f[2]}</span></span></label>`).join('');
+        perfCalc();
+    }
+    function perfCalc() {
+        const v = (id, d) => { const e = document.getElementById(id); const n = e ? parseFloat(e.value) : NaN; return isNaN(n) || n < 0 ? d : n; };
+        const $ = (id) => document.getElementById(id);
+        const gs = Math.max(1, v('pGs', 90));
+        let ftNm;
+        if (perfMode === 0) ftNm = v('pRoc', 0) * 60 / gs;
+        else if (perfMode === 1) ftNm = v('pPct', 0) / 100 * 6076;
+        else ftNm = v('pAlt', 0) / Math.max(0.1, v('pDist', 5));
+        const pct = ftNm / 6076 * 100, roc = ftNm * gs / 60, ang = Math.atan(pct / 100) * 180 / Math.PI;
+        $('perfPct').textContent = '%' + pct.toFixed(1); $('perfFtNm').textContent = Math.round(ftNm);
+        $('perfRoc').textContent = Math.round(roc) + ' fpm'; $('perfAngle').textContent = ang.toFixed(1) + '°';
+        const D = perfMode === 2 ? Math.max(0.1, v('pDist', 5)) : 5, gain = ftNm * D, W = 400, x0 = 34, x1 = 384, y0 = 160, yT = 40;
+        let ticks = ''; const step = D > 12 ? Math.ceil(D / 6) : D > 6 ? 2 : D <= 2 ? 0.5 : 1;
+        for (let n = 0; n <= D + 1e-6; n += step) { const x = x0 + (x1 - x0) * n / D; ticks += `<line x1="${x.toFixed(1)}" y1="${y0}" x2="${x.toFixed(1)}" y2="${y0 + 5}" stroke="#64748B"/><text x="${x.toFixed(1)}" y="${y0 + 17}" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="monospace">${+n.toFixed(1)} NM</text>`; }
+        $('perfSvg').innerHTML = `<svg viewBox="0 0 400 190" class="w-full rounded-xl border" style="border-color:var(--border);background-color:var(--bg)"><polygon points="${x0},${y0} ${x1},${y0} ${x1},${yT}" fill="#22D3EE" fill-opacity="0.12"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" stroke="#64748B"/><line x1="${x1}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-dasharray="3 3"/>${ticks}<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-width="2.5"/><text x="${x0 + 6}" y="${y0 - 6}" font-size="10" fill="#94A3B8" font-family="monospace">0 ft</text><text x="${x1 - 6}" y="${(yT + (y0 - yT) / 2).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="#22D3EE" font-family="monospace">+${Math.round(gain)} ft</text><text x="${(x0 + x1) / 2}" y="${(yT + 6).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#FFB020" font-family="monospace">%${pct.toFixed(1)} • ${ang.toFixed(1)}°</text><text x="8" y="14" font-size="9" fill="#94A3B8" font-family="monospace">${+D.toFixed(1)} NM boyunca kazanılan irtifa • dikey ölçek abartılı</text></svg>`;
+        const toK = 1000 / Math.max(0.01, ftNm);
+        $('perfPlan').textContent = ftNm > 0 ? `Her 1 NM'de +${Math.round(ftNm)} ft. 1000 ft'e ulaşmak için ${toK.toFixed(1)} NM (≈ ${(toK / gs * 60).toFixed(1)} dk) gerekir.` : '';
+        const S = [
+            [`1) Yer hızını dakikaya çevirin: ${gs} kt ÷ 60 = ${(gs / 60).toFixed(2)} NM/dk. Her dakikada o kadar NM yol alırsınız.`, `2) Her NM'de ne kadar yükselirsiniz? ${Math.round(roc)} fpm ÷ ${(gs / 60).toFixed(2)} NM/dk = ${Math.round(ftNm)} ft/NM.`, `3) Yüzdeye çevirin: 1 NM = 6076 ft olduğundan ${Math.round(ftNm)} ÷ 6076 × 100 = %${pct.toFixed(1)}. Kısayol: % ≈ varyo ÷ GS = ${(roc / gs).toFixed(1)}.`],
+            [`1) Her NM'de gereken irtifa: %${pct.toFixed(1)} × 6076 ÷ 100 = ${Math.round(ftNm)} ft/NM (kısayol: % × 61).`, `2) Dakikada kaç NM gidersiniz? ${gs} kt ÷ 60 = ${(gs / 60).toFixed(2)} NM/dk.`, `3) Gereken varyo = ${Math.round(ftNm)} ft/NM × ${(gs / 60).toFixed(2)} NM/dk = ${Math.round(roc)} fpm. Kısayol: % × GS = ${(pct * gs).toFixed(0)} fpm.`],
+            [`1) Her NM'de ne kadar yükselirsiniz? ${v('pAlt', 0)} ft ÷ ${+D.toFixed(1)} NM = ${Math.round(ftNm)} ft/NM.`, `2) Yüzdeye çevirin: ${Math.round(ftNm)} ÷ 6076 × 100 = %${pct.toFixed(1)}.`, `3) Gereken varyo: ${Math.round(ftNm)} ft/NM × (${gs} ÷ 60) NM/dk = ${Math.round(roc)} fpm.`]
+        ][perfMode];
+        $('perfSteps').innerHTML = S.map(t => `<div>${t}</div>`).join('');
+    }
+
     // ========== INIT ==========
     window.addEventListener('DOMContentLoaded', () => {
         applyTheme('dark');
@@ -1716,6 +1797,7 @@
         generateVarioQuiz();
         showDailyTip();
         metarInit();
+        perfInit();
     });
 </script>
 </body>
