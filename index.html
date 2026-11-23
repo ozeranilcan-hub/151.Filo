@@ -327,78 +327,6 @@
                 </svg>
             </div>
         </div>
-
-        <!-- G1000 HSI GÖSTERGESİ (Holding Altında) -->
-        <div class="avionics-panel rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-5">
-            <div class="relative w-56 aspect-[260/276] shrink-0 rounded-2xl p-2 shadow-2xl flex items-center justify-center border" style="background-color:#04070D; border-color:var(--border);">
-                <svg id="holdHsiSvg" viewBox="0 0 260 276" class="w-full h-full select-none">
-                    <!-- Sol Üst: HDG (Uçak Başı - Sarı) -->
-                    <text x="10" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">HDG</text>
-                    <text id="holdHsiHdgText" x="34" y="18" fill="#FFB020" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">080°</text>
-
-                    <!-- Sağ Üst: CRS (Inbound Course - Magenta) -->
-                    <text x="186" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">CRS</text>
-                    <text id="holdHsiCrsText" x="210" y="18" fill="#FF2A85" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">090°</text>
-
-                    <!-- Üst Orta Mevcut Heading Kutusu -->
-                    <rect x="103" y="4" width="54" height="22" rx="3" fill="#020408" stroke="#94A3B8" stroke-width="1.3" />
-                    <text id="holdHsiTopBox" x="130" y="19" text-anchor="middle" fill="#FFFFFF" font-family="JetBrains Mono, monospace" font-size="13" font-weight="800">080°</text>
-
-                    <!-- Pusula Dış Çemberi -->
-                    <circle cx="130" cy="142" r="96" fill="#0A1019" stroke="#334155" stroke-width="1.4" />
-                    <!-- Lubber Line Üçgeni -->
-                    <polygon points="130,44 124,33 136,33" fill="#FFFFFF" />
-
-                    <!-- Dönen Pusula Gülü (Anlık Uçak Heading'ine Göre Döner) -->
-                    <g id="holdHsiCompassRose" transform="rotate(-80 130 142)">
-                        <g id="holdHsiCompassTicks"></g>
-                    </g>
-
-                    <!-- Heading Bug (Cyan İmleç - Seçili Başlangıç Heading'i) -->
-                    <g id="holdHsiHdgBug" transform="rotate(0 130 142)">
-                        <path d="M 121 44 L 125 44 L 127 48 L 133 48 L 135 44 L 139 44 L 139 50 L 121 50 Z" fill="#00E5FF" stroke="#04070D" stroke-width="0.8"/>
-                    </g>
-
-                    <!-- Course Pointer (Inbound Hattı - Magenta CDI Oku) -->
-                    <g id="holdHsiCrsPointer" transform="rotate(10 130 142)">
-                        <line x1="130" y1="54" x2="130" y2="104" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                        <polygon points="130,50 124,62 136,62" fill="#FF2A85"/>
-                        <!-- CDI Orta Çubuğu -->
-                        <line id="holdHsiCdiBar" x1="130" y1="112" x2="130" y2="172" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                        <!-- TO / FROM Üçgeni -->
-                        <polygon points="130,96 125,104 135,104" fill="#FF2A85"/>
-                        <line x1="130" y1="180" x2="130" y2="230" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                    </g>
-
-                    <!-- Merkez Uçak Silüeti -->
-                    <g fill="#FFFFFF">
-                        <rect x="128.5" y="128" width="3" height="26" rx="1.5"/>
-                        <polygon points="130,135 113,144 113,147 130,141 147,147 147,144"/>
-                        <polygon points="130,149 123,154 123,156 130,153 137,156 137,154"/>
-                    </g>
-                </svg>
-            </div>
-
-            <!-- HSI Sağ Bilgi Paneli -->
-            <div class="flex-1 space-y-2.5 text-xs w-full">
-                <div class="font-mono font-bold uppercase tracking-wider flex items-center justify-between" style="color:var(--text)">
-                    <span>G1000 HSI GÖSTERGESİ</span>
-                    <span class="text-[10px] text-avionics-cyan font-normal">CANLI SENKRON</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">ANLIK HEADING (HDG):</span>
-                    <span id="holdHsiLiveHdg" class="font-bold text-avionics-amber text-sm">080°</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">INBOUND COURSE (CRS):</span>
-                    <span id="holdHsiLiveCrs" class="font-bold text-avionics-magenta text-sm">090°</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">OUTBOUND RADYAL / BAŞ:</span>
-                    <span id="holdHsiLiveOut" class="font-bold text-avionics-cyan text-sm">270°</span>
-                </div>
-            </div>
-        </div>
     </section>
 </main>
 
@@ -991,39 +919,6 @@
         document.getElementById('holdEntryGuidePath').setAttribute('d', dStr);
     }
 
-    function updateHoldingHsiVisual(liveWorldHdg, crossTrack) {
-        const hdg = normalizeDeg360(liveWorldHdg);
-        const crs = normalizeDeg360(holdAnim.inbound);
-        const out = normalizeDeg360(crs + 180);
-
-        const hdgStr = formatHeading(hdg) + '°';
-        const crsStr = formatHeading(crs) + '°';
-        const outStr = formatHeading(out) + '°';
-
-        document.getElementById('holdHsiHdgText').textContent = hdgStr;
-        document.getElementById('holdHsiCrsText').textContent = crsStr;
-        document.getElementById('holdHsiTopBox').textContent = hdgStr;
-
-        document.getElementById('holdHsiCompassRose').setAttribute('transform', `rotate(${-hdg} 130 142)`);
-
-        const crsRel = (crs - hdg + 540) % 360 - 180;
-        document.getElementById('holdHsiCrsPointer').setAttribute('transform', `rotate(${crsRel} 130 142)`);
-
-        const bugRel = (holdAnim.initHeading - hdg + 540) % 360 - 180;
-        document.getElementById('holdHsiHdgBug').setAttribute('transform', `rotate(${bugRel} 130 142)`);
-
-        // CDI: uçak inbound hattının sağındaysa çubuk sola kayar (±40 px sınır)
-        const cdi = document.getElementById('holdHsiCdiBar');
-        if (cdi) {
-            const dx = Math.max(-40, Math.min(40, -crossTrack * 0.9));
-            cdi.setAttribute('transform', `translate(${dx.toFixed(1)} 0)`);
-        }
-
-        document.getElementById('holdHsiLiveHdg').textContent = hdgStr;
-        document.getElementById('holdHsiLiveCrs').textContent = crsStr;
-        document.getElementById('holdHsiLiveOut').textContent = outStr;
-    }
-
     function renderHoldAnimFrame(distVal) {
         const pts = holdAnim.waypoints;
         const cum = holdAnim.cumDist;
@@ -1072,7 +967,6 @@
         const badge = document.getElementById('holdAnimPhaseBadge');
         if (badge && p1.phase) badge.textContent = p1.phase;
 
-        updateHoldingHsiVisual(holdAnim.inbound + localDeg, curX - 150);
     }
 
     const HOLD_SPEED = 45;        // birim / sn (1.0x)
@@ -1271,13 +1165,13 @@
         $('wcaHoldIdeal').setAttribute('d', d(wcaAnim.ideal)); $('wcaHoldFull').setAttribute('d', d(wcaAnim.pts));
         const f = wcaAnim.map({ x: 0, y: 0 }); $('wcaHoldFix').setAttribute('cx', f[0]); $('wcaHoldFix').setAttribute('cy', f[1]);
         $('wcaHoldFixTxt').setAttribute('x', f[0] + 9); $('wcaHoldFixTxt').setAttribute('y', f[1] - 7);
-        // Rüzgar: geldiği tarafta, o yöne akan oklar (sağdan → sağda, sola doğru; soldan → solda, sağa doğru)
+        // Rüzgar: geldiği kenarda, o yöne akan küçük oklar (sağdan → sağ kenarda, sola doğru)
         const N = 7, dirW = -side;
         let wh = '';
         if (ws > 0) {
-            const len = Math.min(54, 20 + ws * 1.1), sw = (1.6 + Math.min(2.4, ws / 12)).toFixed(1);
+            const len = 10 + Math.min(18, ws * 0.4), hd = 5, sw = (1.8 + Math.min(1.2, ws / 30)).toFixed(1);
             wh += `<text x="${side > 0 ? 312 : 8}" y="16" text-anchor="${side > 0 ? 'end' : 'start'}" fill="#FF6B6B" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">Rüzgar ${side > 0 ? 'sağdan' : 'soldan'} ${Math.round(ws)} kt</text>`;
-            for (let i = 0; i < N; i++) wh += `<path class="wa" d="M0 0 L${dirW * len} 0 M${dirW * len} 0 L${dirW * (len - 9)} -5 M${dirW * len} 0 L${dirW * (len - 9)} 5" fill="none" stroke="#FF6B6B" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>`;
+            for (let i = 0; i < N; i++) wh += `<path class="wa" d="M0 0 L${dirW * len} 0 M${dirW * len} 0 L${dirW * (len - hd)} -${hd - 1} M${dirW * len} 0 L${dirW * (len - hd)} ${hd - 1}" fill="none" stroke="#FF6B6B" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>`;
         }
         const wg = $('wcaHoldWind'); wg.innerHTML = wh;
         wcaAnim.wind = { side, ws, N, els: wg.querySelectorAll ? Array.from(wg.querySelectorAll('.wa')) : [] };
@@ -1286,7 +1180,7 @@
     }
     function wcaWindRender() {
         const w = wcaAnim.wind; if (!w || !w.els.length) return;
-        const band = 105, top = 38, gap = (270 - 2 * top) / (w.N - 1);
+        const band = 100, top = 38, gap = (270 - 2 * top) / (w.N - 1);
         w.els.forEach((el, i) => {
             const p = (((wcaAnim.wp + i * 0.31 + (i % 2) * 0.17) % 1) + 1) % 1;
             const x = w.side > 0 ? 316 - p * band : 4 + p * band;
@@ -1801,7 +1695,6 @@
             c.innerHTML = h;
         };
         buildRose('g1000CompassTicks');
-        buildRose('holdHsiCompassTicks');
         switchTab('home');
         nextQuestion();
         calculateHolding();
