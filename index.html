@@ -118,7 +118,7 @@
         <div onclick="switchTab('perf')" class="avionics-panel home-card rounded-2xl p-6 flex flex-col items-center text-center border-2" style="border-color:var(--border);">
             <div class="w-14 h-14 rounded-full bg-avionics-amber/10 flex items-center justify-center mb-4 text-2xl">📈</div>
             <h2 class="font-mono text-lg font-bold mb-2" style="color:var(--text)">PERFORMANS</h2>
-            <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Tırmanış gradyanı: %, ft/NM, gereken varyo ve çizim.</p>
+            <p class="text-xs mb-6 flex-1" style="color:var(--text-muted)">Tırmanış gradyanı: irtifa ve mesafeden % ve ft/NM.</p>
             <button class="px-5 py-2 rounded-lg bg-avionics-amber font-mono font-bold text-xs" style="color:var(--bg)">GRADYAN HESAPLA</button>
         </div>
     </div>
@@ -327,84 +327,12 @@
                 </svg>
             </div>
         </div>
-
-        <!-- G1000 HSI GÖSTERGESİ (Holding Altında) -->
-        <div class="avionics-panel rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-5">
-            <div class="relative w-56 aspect-[260/276] shrink-0 rounded-2xl p-2 shadow-2xl flex items-center justify-center border" style="background-color:#04070D; border-color:var(--border);">
-                <svg id="holdHsiSvg" viewBox="0 0 260 276" class="w-full h-full select-none">
-                    <!-- Sol Üst: HDG (Uçak Başı - Sarı) -->
-                    <text x="10" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">HDG</text>
-                    <text id="holdHsiHdgText" x="34" y="18" fill="#FFB020" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">080°</text>
-
-                    <!-- Sağ Üst: CRS (Inbound Course - Magenta) -->
-                    <text x="186" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">CRS</text>
-                    <text id="holdHsiCrsText" x="210" y="18" fill="#FF2A85" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">090°</text>
-
-                    <!-- Üst Orta Mevcut Heading Kutusu -->
-                    <rect x="103" y="4" width="54" height="22" rx="3" fill="#020408" stroke="#94A3B8" stroke-width="1.3" />
-                    <text id="holdHsiTopBox" x="130" y="19" text-anchor="middle" fill="#FFFFFF" font-family="JetBrains Mono, monospace" font-size="13" font-weight="800">080°</text>
-
-                    <!-- Pusula Dış Çemberi -->
-                    <circle cx="130" cy="142" r="96" fill="#0A1019" stroke="#334155" stroke-width="1.4" />
-                    <!-- Lubber Line Üçgeni -->
-                    <polygon points="130,44 124,33 136,33" fill="#FFFFFF" />
-
-                    <!-- Dönen Pusula Gülü (Anlık Uçak Heading'ine Göre Döner) -->
-                    <g id="holdHsiCompassRose" transform="rotate(-80 130 142)">
-                        <g id="holdHsiCompassTicks"></g>
-                    </g>
-
-                    <!-- Heading Bug (Cyan İmleç - Seçili Başlangıç Heading'i) -->
-                    <g id="holdHsiHdgBug" transform="rotate(0 130 142)">
-                        <path d="M 121 44 L 125 44 L 127 48 L 133 48 L 135 44 L 139 44 L 139 50 L 121 50 Z" fill="#00E5FF" stroke="#04070D" stroke-width="0.8"/>
-                    </g>
-
-                    <!-- Course Pointer (Inbound Hattı - Magenta CDI Oku) -->
-                    <g id="holdHsiCrsPointer" transform="rotate(10 130 142)">
-                        <line x1="130" y1="54" x2="130" y2="104" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                        <polygon points="130,50 124,62 136,62" fill="#FF2A85"/>
-                        <!-- CDI Orta Çubuğu -->
-                        <line id="holdHsiCdiBar" x1="130" y1="112" x2="130" y2="172" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                        <!-- TO / FROM Üçgeni -->
-                        <polygon points="130,96 125,104 135,104" fill="#FF2A85"/>
-                        <line x1="130" y1="180" x2="130" y2="230" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                    </g>
-
-                    <!-- Merkez Uçak Silüeti -->
-                    <g fill="#FFFFFF">
-                        <rect x="128.5" y="128" width="3" height="26" rx="1.5"/>
-                        <polygon points="130,135 113,144 113,147 130,141 147,147 147,144"/>
-                        <polygon points="130,149 123,154 123,156 130,153 137,156 137,154"/>
-                    </g>
-                </svg>
-            </div>
-
-            <!-- HSI Sağ Bilgi Paneli -->
-            <div class="flex-1 space-y-2.5 text-xs w-full">
-                <div class="font-mono font-bold uppercase tracking-wider flex items-center justify-between" style="color:var(--text)">
-                    <span>G1000 HSI GÖSTERGESİ</span>
-                    <span class="text-[10px] text-avionics-cyan font-normal">CANLI SENKRON</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">ANLIK HEADING (HDG):</span>
-                    <span id="holdHsiLiveHdg" class="font-bold text-avionics-amber text-sm">080°</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">INBOUND COURSE (CRS):</span>
-                    <span id="holdHsiLiveCrs" class="font-bold text-avionics-magenta text-sm">090°</span>
-                </div>
-                <div class="rounded-xl p-3 font-mono text-[11px] border flex items-center justify-between" style="background-color:var(--bg); border-color:var(--border);">
-                    <span style="color:var(--text-muted)">OUTBOUND RADYAL / BAŞ:</span>
-                    <span id="holdHsiLiveOut" class="font-bold text-avionics-cyan text-sm">270°</span>
-                </div>
-            </div>
-        </div>
     </section>
 </main>
 
 <!-- WCA -->
 <main id="viewWca" role="tabpanel" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-    <section class="lg:col-span-6 avionics-panel rounded-2xl p-5 sm:p-7 flex flex-col gap-5">
+    <section class="lg:col-span-5 avionics-panel rounded-2xl p-5 sm:p-7 flex flex-col gap-5">
         <div class="pb-3 border-b" style="border-color:var(--border);">
             <h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">WCA HESAPLAYICI</h2>
             <p class="text-xs mt-0.5" style="color:var(--text-muted)">G1000'de net görünen yan rüzgarı girin; uçmanız gereken başı ve düzeltmeyi görün.</p>
@@ -436,14 +364,14 @@
             <div class="flex items-center justify-between mb-2">
                 <span class="font-mono text-xs" style="color:var(--text-muted)">Hız</span>
                 <div class="flex items-center gap-1">
-                    <input id="calcWindSpdInput" type="number" inputmode="decimal" min="0" max="60" step="any" value="10" oninput="syncWcaFromInputs('windSpd')" class="w-20 rounded-lg px-2 py-1 font-mono text-base font-bold text-avionics-amber text-right outline-none border" style="background-color:var(--elevated); border-color:var(--border);" />
+                    <input id="calcWindSpdInput" type="number" inputmode="numeric" min="0" max="60" step="1" value="10" oninput="syncWcaFromInputs('windSpd')" class="w-20 rounded-lg px-2 py-1 font-mono text-base font-bold text-avionics-amber text-right outline-none border" style="background-color:var(--elevated); border-color:var(--border);" />
                     <span class="font-mono text-xs" style="color:var(--text-muted)">kt</span>
                 </div>
             </div>
-            <input id="calcWindSpdSlider" type="range" min="0" max="40" step="0.5" value="10" oninput="syncWcaFromSliders('windSpd')" class="w-full" />
+            <input id="calcWindSpdSlider" type="range" min="0" max="40" step="1" value="10" oninput="syncWcaFromSliders('windSpd')" class="w-full" />
         </div>
     </section>
-    <section class="lg:col-span-6 flex flex-col gap-5">
+    <section class="lg:col-span-7 flex flex-col gap-5">
         <div class="avionics-panel rounded-2xl p-5 sm:p-6">
             <div class="rounded-2xl p-5 text-center border border-avionics-cyan/40 shadow-[0_0_25px_-8px_rgba(0,229,255,0.25)]" style="background-color:var(--bg);">
                 <div class="font-mono text-[11px] tracking-wider text-avionics-cyan uppercase">UÇMANIZ GEREKEN BAŞ</div>
@@ -454,49 +382,34 @@
                 <div class="font-mono text-[10px] mt-2" style="color:var(--text-muted)">Sarı: rüzgar içine yapılan düzeltme</div>
             </div>
         </div>
-        <div class="avionics-panel rounded-2xl p-5 flex items-center justify-center">
-            <div class="relative w-56 aspect-[260/276] shrink-0 rounded-2xl p-2 flex items-center justify-center border" style="background-color:#04070D; border-color:var(--border);">
-                <svg id="wcaHsiSvg" viewBox="0 0 260 276" class="w-full h-full select-none">
-                    <text x="10" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">HDG</text>
-                    <text id="wcaHsiHdgText" x="34" y="18" fill="#00E5FF" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">099°</text>
-                    <text x="186" y="18" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">TRK</text>
-                    <text id="wcaHsiCrsText" x="210" y="18" fill="#FF2A85" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800">090°</text>
-                    <rect x="103" y="4" width="54" height="22" rx="3" fill="#020408" stroke="#94A3B8" stroke-width="1.3" />
-                    <text id="wcaHsiTopBox" x="130" y="19" text-anchor="middle" fill="#FFFFFF" font-family="JetBrains Mono, monospace" font-size="13" font-weight="800">099°</text>
-                    <circle cx="130" cy="142" r="96" fill="#0A1019" stroke="#334155" stroke-width="1.4" />
-                    <polygon points="130,44 124,33 136,33" fill="#FFFFFF" />
-                    <g id="wcaHsiCompassRose" class="smooth-rotate" transform="rotate(-99 130 142)"><g id="wcaHsiCompassTicks"></g></g>
-                    <g id="wcaHsiCrsPointer" class="smooth-rotate" transform="rotate(-9 130 142)">
-                        <line x1="130" y1="54" x2="130" y2="108" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                        <polygon points="130,50 124,62 136,62" fill="#FF2A85"/>
-                        <line x1="130" y1="176" x2="130" y2="230" stroke="#FF2A85" stroke-width="2.5" stroke-linecap="round"/>
-                    </g>
-                    <g id="wcaHsiWindArrow" class="smooth-rotate" transform="rotate(41 130 142)">
-                        <line x1="130" y1="54" x2="130" y2="84" stroke="#FFB020" stroke-width="2.5" stroke-linecap="round"/>
-                        <polygon points="130,89 125,79 135,79" fill="#FFB020"/>
-                    </g>
-                    <g fill="#FFFFFF"><rect x="128.5" y="128" width="3" height="26" rx="1.5"/><polygon points="130,135 113,144 113,147 130,141 147,147 147,144"/><polygon points="130,149 123,154 123,156 130,153 137,156 137,154"/></g>
-                </svg>
-            </div>
-        </div>
         <div class="avionics-panel rounded-2xl p-5">
             <div class="font-mono text-[11px] font-bold tracking-wider uppercase mb-2 text-avionics-amber">HOLDING'DE DÜZELTME: OUTBOUND ×3, INBOUND ×1</div>
             <div id="wcaHoldNote" class="font-mono text-xs leading-relaxed space-y-1.5" style="color:var(--text)"></div>
         </div>
         <div class="avionics-panel rounded-2xl p-5">
             <div class="font-mono text-[11px] font-bold tracking-wider uppercase mb-2 text-avionics-amber">RÜZGARDA HOLDING ŞEKLİ (ARMUT)</div>
-            <svg id="wcaHoldSvg" viewBox="0 0 320 270" class="w-full max-w-md mx-auto rounded-xl border" style="border-color:var(--border);background-color:#04070D">
+            <svg id="wcaHoldSvg" viewBox="0 0 320 270" class="w-full max-w-2xl mx-auto rounded-xl border" style="border-color:var(--border);background-color:#04070D">
+                <g id="wcaHoldWind"></g>
                 <path id="wcaHoldIdeal" fill="none" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4"/>
                 <path id="wcaHoldFull" fill="none" stroke="#FFB020" stroke-opacity="0.25" stroke-width="2"/>
                 <path id="wcaHoldTrail" fill="none" stroke="#FFB020" stroke-width="2.5" stroke-linejoin="round"/>
                 <circle id="wcaHoldFix" r="5" fill="#04070D" stroke="#FFFFFF" stroke-width="2"/>
                 <text id="wcaHoldFixTxt" fill="#FFFFFF" font-size="9" font-weight="700" font-family="JetBrains Mono, monospace">FIX</text>
-                <polygon id="wcaHoldAc" points="0,-8 6,7 0,3 -6,7" fill="#00E5FF"/>
-                <g id="wcaHoldWind"></g>
+                <line id="wcaHoldTrkLine" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+                <line id="wcaHoldHdgLine" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round"/>
+                <g id="wcaHoldAc"><path transform="scale(0.6)" fill="#00E5FF" stroke="#04070D" stroke-width="1" d="M0 -22 C2.5 -22 3.5 -17 3.5 -12 L3.5 -5 L24 7 L24 11.5 L3.5 6 L3.5 14 L10 18.5 L10 22 L0 19.5 L-10 22 L-10 18.5 L-3.5 14 L-3.5 6 L-24 11.5 L-24 7 L-3.5 -5 L-3.5 -12 C-3.5 -17 -2.5 -22 0 -22 Z"/></g>
+                <text id="wcaHoldReadout" x="10" y="262" fill="#E2E8F0" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace"></text>
             </svg>
+            <div class="flex items-center justify-center gap-2 mt-3 font-mono text-xs font-bold">
+                <button id="wcaPlayBtn" onclick="wcaTogglePlay()" class="px-4 py-2 rounded-lg bg-avionics-amber" style="color:var(--bg)">DURAKLAT</button>
+                <button onclick="wcaRestart()" class="px-4 py-2 rounded-lg border" style="border-color:var(--border);color:var(--text)">BAŞA AL</button>
+                <select id="wcaSpeedSel" onchange="wcaSetSpeed(this.value)" class="rounded-lg px-2 py-2 border font-mono" style="background-color:var(--bg);border-color:var(--border);color:var(--text)"><option value="0.5">0.5x</option><option value="1">1.0x</option><option value="2" selected>2.0x</option></select>
+            </div>
             <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 font-mono text-[10px] justify-center" style="color:var(--text-muted)">
                 <span><span style="color:#64748B">- - -</span> rüzgarsız</span>
                 <span><span style="color:#FFB020">━━</span> rüzgarda (inbound ×1, outbound ×3)</span>
+                <span><span style="color:#00E5FF">━━</span> burnun baktığı yön (HDG)</span>
+                <span><span style="color:#FFFFFF">- - -</span> gidilen yön (TRK)</span>
             </div>
         </div>
     </section>
@@ -689,16 +602,13 @@
 <main id="viewPerf" role="tabpanel" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
     <section class="lg:col-span-5 avionics-panel rounded-2xl p-5 flex flex-col gap-3">
         <div><h2 class="font-mono text-sm font-bold tracking-wider uppercase" style="color:var(--text)">TIRMANIŞ GRADYANI</h2>
-        <p class="text-xs mt-0.5" style="color:var(--text-muted)">Yerden (0 ft) başlayan tırmanış için gradyanı hesaplayın. Neyi biliyorsanız onu seçin.</p></div>
-        <div id="perfModes" class="grid grid-cols-1 gap-1.5 font-mono text-[11px] font-semibold"></div>
+        <p class="text-xs mt-0.5" style="color:var(--text-muted)">Yerden (0 ft) başlayan tırmanışta kazanılacak irtifayı ve mesafeyi girin.</p></div>
         <div id="perfFields" class="flex flex-col gap-2"></div>
     </section>
     <section class="lg:col-span-7 avionics-panel rounded-2xl p-5 flex flex-col gap-4">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono">
-            <div class="rounded-xl p-3 border" style="border-color:var(--cyan);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">GRADYAN</div><div id="perfPct" class="text-xl font-bold text-avionics-cyan">-</div></div>
-            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">FT / NM</div><div id="perfFtNm" class="text-xl font-bold" style="color:var(--text)">-</div></div>
-            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">VARYO (ROC)</div><div id="perfRoc" class="text-xl font-bold text-avionics-amber">-</div></div>
-            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">AÇI</div><div id="perfAngle" class="text-xl font-bold" style="color:var(--text)">-</div></div>
+        <div class="grid grid-cols-2 gap-2 text-center font-mono">
+            <div class="rounded-xl p-3 border" style="border-color:var(--cyan);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">GRADYAN</div><div id="perfPct" class="text-2xl font-bold text-avionics-cyan">-</div></div>
+            <div class="rounded-xl p-3 border" style="border-color:var(--border);background-color:var(--bg)"><div class="text-[10px]" style="color:var(--text-muted)">FT / NM</div><div id="perfFtNm" class="text-2xl font-bold" style="color:var(--text)">-</div></div>
         </div>
         <div id="perfSvg"></div>
         <div id="perfPlan" class="font-mono text-xs" style="color:var(--text-muted)"></div>
@@ -1009,39 +919,6 @@
         document.getElementById('holdEntryGuidePath').setAttribute('d', dStr);
     }
 
-    function updateHoldingHsiVisual(liveWorldHdg, crossTrack) {
-        const hdg = normalizeDeg360(liveWorldHdg);
-        const crs = normalizeDeg360(holdAnim.inbound);
-        const out = normalizeDeg360(crs + 180);
-
-        const hdgStr = formatHeading(hdg) + '°';
-        const crsStr = formatHeading(crs) + '°';
-        const outStr = formatHeading(out) + '°';
-
-        document.getElementById('holdHsiHdgText').textContent = hdgStr;
-        document.getElementById('holdHsiCrsText').textContent = crsStr;
-        document.getElementById('holdHsiTopBox').textContent = hdgStr;
-
-        document.getElementById('holdHsiCompassRose').setAttribute('transform', `rotate(${-hdg} 130 142)`);
-
-        const crsRel = (crs - hdg + 540) % 360 - 180;
-        document.getElementById('holdHsiCrsPointer').setAttribute('transform', `rotate(${crsRel} 130 142)`);
-
-        const bugRel = (holdAnim.initHeading - hdg + 540) % 360 - 180;
-        document.getElementById('holdHsiHdgBug').setAttribute('transform', `rotate(${bugRel} 130 142)`);
-
-        // CDI: uçak inbound hattının sağındaysa çubuk sola kayar (±40 px sınır)
-        const cdi = document.getElementById('holdHsiCdiBar');
-        if (cdi) {
-            const dx = Math.max(-40, Math.min(40, -crossTrack * 0.9));
-            cdi.setAttribute('transform', `translate(${dx.toFixed(1)} 0)`);
-        }
-
-        document.getElementById('holdHsiLiveHdg').textContent = hdgStr;
-        document.getElementById('holdHsiLiveCrs').textContent = crsStr;
-        document.getElementById('holdHsiLiveOut').textContent = outStr;
-    }
-
     function renderHoldAnimFrame(distVal) {
         const pts = holdAnim.waypoints;
         const cum = holdAnim.cumDist;
@@ -1090,7 +967,6 @@
         const badge = document.getElementById('holdAnimPhaseBadge');
         if (badge && p1.phase) badge.textContent = p1.phase;
 
-        updateHoldingHsiVisual(holdAnim.inbound + localDeg, curX - 150);
     }
 
     const HOLD_SPEED = 45;        // birim / sn (1.0x)
@@ -1234,12 +1110,12 @@
     }
     function syncWcaFromInputs(f) {
         if (f === 'hdg') { const v = clampDeg(parseInt(document.getElementById('calcHdgInput').value, 10)); document.getElementById('calcHdgInput').value = formatHeading(v); document.getElementById('calcHdgSlider').value = v; }
-        else if (f === 'windSpd') { const v = Math.max(0, Math.min(60, parseFloat(document.getElementById('calcWindSpdInput').value) || 0)); document.getElementById('calcWindSpdSlider').value = Math.min(40, v); }
+        else if (f === 'windSpd') { const v = Math.max(0, Math.min(60, parseInt(document.getElementById('calcWindSpdInput').value, 10) || 0)); document.getElementById('calcWindSpdSlider').value = Math.min(40, v); }
         recalculateWcaTool();
     }
     function recalculateWcaTool() {
         const hdg = normalizeDeg360(parseInt(document.getElementById('calcHdgInput').value, 10) || 90);
-        const windSpd = Math.max(0, Math.min(60, parseFloat(document.getElementById('calcWindSpdInput').value) || 0));
+        const windSpd = Math.max(0, Math.min(60, parseInt(document.getElementById('calcWindSpdInput').value, 10) || 0));
         const tas = wcaState.tas, side = wcaState.side;
         // Yan rüzgar tam 90°: düzeltme = asin(rüzgar / TAS); rüzgarın geldiği tarafa kırılır
         const exactWca = Math.asin(Math.min(0.99, windSpd / tas)) * 180 / Math.PI;
@@ -1252,14 +1128,7 @@
         document.getElementById('resHdgDisplay').textContent = formatHeading(actualHdg) + '°';
         document.getElementById('resWcaDisplay').textContent = (wca > 0 ? '+' : wca < 0 ? '−' : '') + Math.abs(wca) + '°';
         document.getElementById('resWcaSide').textContent = wca > 0 ? 'SAĞA' : wca < 0 ? 'SOLA' : 'DÜZELTME YOK';
-        document.getElementById('wcaHsiHdgText').textContent = formatHeading(actualHdg) + '°';
-        document.getElementById('wcaHsiCrsText').textContent = formatHeading(hdg) + '°';
-        document.getElementById('wcaHsiTopBox').textContent = formatHeading(actualHdg) + '°';
-        document.getElementById('wcaHsiCompassRose').setAttribute('transform', `rotate(${-actualHdg} 130 142)`);
-        document.getElementById('wcaHsiCrsPointer').setAttribute('transform', `rotate(${-wca} 130 142)`);
-        const rel = (windDir - actualHdg + 540) % 360 - 180;
-        document.getElementById('wcaHsiWindArrow').setAttribute('transform', `rotate(${rel} 130 142)`);
-        wcaAnimUpdate(tas, windSpd, side, Math.abs(wca));
+        wcaAnimUpdate(tas, windSpd, side, Math.abs(wca), hdg);
         // Holding notu: girilen yön inbound kabul edilir; outbound'da düzeltme 3 katı, rüzgar ters taraftan gelir
         const wa = Math.abs(wca), sideTxt = (sd) => sd > 0 ? 'sağa' : 'sola';
         const outCrs = normalizeDeg360(hdg + 180), outWca = 3 * wa, outSide = -side;
@@ -1267,12 +1136,13 @@
         document.getElementById('wcaHoldNote').innerHTML = wa === 0
             ? 'Rüzgar yok, düzeltme gerekmiyor.'
             : `<div><b>Inbound (${formatHeading(hdg)}°):</b> rüzgar ${side > 0 ? 'sağdan' : 'soldan'} → düzeltme <b class="text-avionics-amber">${wa}° ${sideTxt(side)}</b> → HDG ${formatHeading(actualHdg)}°</div>
+               ${outWca > 30 ? `<div style="color:var(--crimson)">⚠ 3 × ${wa}° = ${outWca}° ve 30°'yi aşıyor. ×3 kuralı küçük açılar için yaklaşıktır; bu rüzgarda outbound fazla düzeltilir, armut kısalır ve bozulur.</div>` : ''}
                <div><b>Outbound (${formatHeading(outCrs)}°):</b> rüzgar ${outSide > 0 ? 'sağdan' : 'soldan'} geliyor → <b class="text-avionics-amber">3 × ${wa}° = ${outWca}° ${sideTxt(outSide)}</b> → HDG ${formatHeading(outHdg)}°</div>`;
     }
 
     // ========== RÜZGARDA HOLDING ŞEKLİ (ANİMASYON) ==========
-    const WCA_ANIM_DT = 0.5, WCA_ANIM_SPEED = 10;   // simülasyon adımı (sn) ve hız çarpanı
-    const wcaAnim = { pts: [], ideal: [], map: null, t: 0, last: 0, raf: null };
+    const WCA_ANIM_DT = 0.5, WCA_ANIM_SPEED = 5;   // simülasyon adımı (sn) ve hız çarpanı
+    const wcaAnim = { pts: [], ideal: [], map: null, t: 0, last: 0, raf: null, speed: 2, playing: true, wp: 0, wind: null };
     function wcaSimHold(tas, ws, side, wa) {
         const inH = hdgNorm(side * wa), outH = hdgNorm(180 - side * 3 * wa), wx = -side * ws / 3600;   // rüzgar sağdan (+1) → batıya eser
         const pts = []; let x = 0, y = 0, h = inH;
@@ -1283,11 +1153,11 @@
         push(); turnTo(outH); straight(60); turnTo(inH); straight(60);
         return pts;   // standart (sağ) holding: FIX'te sağa dönüş, 1 dk outbound, sağa dönüş, 1 dk inbound
     }
-    function wcaAnimUpdate(tas, ws, side, wa) {
-        wcaAnim.pts = wcaSimHold(tas, ws, side, wa); wcaAnim.ideal = wcaSimHold(tas, 0, 1, 0); wcaAnim.t = 0;
+    function wcaAnimUpdate(tas, ws, side, wa, base) {
+        wcaAnim.base = base; wcaAnim.pts = wcaSimHold(tas, ws, side, wa); wcaAnim.ideal = wcaSimHold(tas, 0, 1, 0); wcaAnim.t = 0;
         const all = wcaAnim.pts.concat(wcaAnim.ideal);
         const xs = all.map(p => p.x), ys = all.map(p => p.y), minX = Math.min(0, ...xs), maxX = Math.max(0, ...xs), minY = Math.min(0, ...ys), maxY = Math.max(0, ...ys);
-        const W = 320, H = 270, pad = 30, sc = Math.min((W - 2 * pad) / Math.max(0.1, maxX - minX), (H - 2 * pad) / Math.max(0.1, maxY - minY));
+        const W = 320, H = 270, pad = 22, sc = Math.min((W - 2 * pad) / Math.max(0.1, maxX - minX), (H - 2 * pad) / Math.max(0.1, maxY - minY));
         const ox = (W - sc * (maxX - minX)) / 2 - sc * minX, oy = H - (H - sc * (maxY - minY)) / 2 + sc * minY;
         wcaAnim.map = (p) => [ox + sc * p.x, oy - sc * p.y];
         const d = (arr) => arr.map((p, i) => { const q = wcaAnim.map(p); return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join(' ');
@@ -1295,10 +1165,28 @@
         $('wcaHoldIdeal').setAttribute('d', d(wcaAnim.ideal)); $('wcaHoldFull').setAttribute('d', d(wcaAnim.pts));
         const f = wcaAnim.map({ x: 0, y: 0 }); $('wcaHoldFix').setAttribute('cx', f[0]); $('wcaHoldFix').setAttribute('cy', f[1]);
         $('wcaHoldFixTxt').setAttribute('x', f[0] + 9); $('wcaHoldFixTxt').setAttribute('y', f[1] - 7);
-        // Rüzgar oku (köşede): sağdan esen rüzgar sola doğru gösterilir
-        const ax = side > 0 ? 70 : 20, bx = side > 0 ? 20 : 70, dir = side > 0 ? 1 : -1;
-        $('wcaHoldWind').innerHTML = ws > 0 ? `<line x1="${ax}" y1="22" x2="${bx}" y2="22" stroke="#00E5FF" stroke-width="2.5"/><polygon points="${bx},22 ${bx + 8 * dir},17 ${bx + 8 * dir},27" fill="#00E5FF"/><text x="10" y="40" fill="#00E5FF" font-size="9" font-family="JetBrains Mono, monospace">Rüzgar ${side > 0 ? 'sağdan' : 'soldan'} ${+ws.toFixed(1)} kt</text>` : '';
+        // Rüzgar: geldiği kenarda, o yöne akan küçük oklar (sağdan → sağ kenarda, sola doğru)
+        const N = 7, dirW = -side;
+        let wh = '';
+        if (ws > 0) {
+            const len = 10 + Math.min(18, ws * 0.4), hd = 5, sw = (1.8 + Math.min(1.2, ws / 30)).toFixed(1);
+            wh += `<text x="${side > 0 ? 312 : 8}" y="16" text-anchor="${side > 0 ? 'end' : 'start'}" fill="#FF6B6B" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">Rüzgar ${side > 0 ? 'sağdan' : 'soldan'} ${Math.round(ws)} kt</text>`;
+            for (let i = 0; i < N; i++) wh += `<path class="wa" d="M0 0 L${dirW * len} 0 M${dirW * len} 0 L${dirW * (len - hd)} -${hd - 1} M${dirW * len} 0 L${dirW * (len - hd)} ${hd - 1}" fill="none" stroke="#FF6B6B" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>`;
+        }
+        const wg = $('wcaHoldWind'); wg.innerHTML = wh;
+        wcaAnim.wind = { side, ws, N, els: wg.querySelectorAll ? Array.from(wg.querySelectorAll('.wa')) : [] };
+        wcaWindRender();
         wcaAnimRender();
+    }
+    function wcaWindRender() {
+        const w = wcaAnim.wind; if (!w || !w.els.length) return;
+        const band = 100, top = 38, gap = (270 - 2 * top) / (w.N - 1);
+        w.els.forEach((el, i) => {
+            const p = (((wcaAnim.wp + i * 0.31 + (i % 2) * 0.17) % 1) + 1) % 1;
+            const x = w.side > 0 ? 316 - p * band : 4 + p * band;
+            el.setAttribute('transform', `translate(${x.toFixed(1)} ${(top + i * gap).toFixed(1)})`);
+            el.setAttribute('opacity', (Math.sin(Math.PI * p) * 0.85).toFixed(2));
+        });
     }
     function wcaAnimRender() {
         if (!wcaAnim.map || !wcaAnim.pts.length) return;
@@ -1306,15 +1194,25 @@
         let tr = ''; for (let i = 0; i <= idx; i++) { const r = wcaAnim.map(wcaAnim.pts[i]); tr += (i ? 'L' : 'M') + r[0].toFixed(1) + ' ' + r[1].toFixed(1); }
         document.getElementById('wcaHoldTrail').setAttribute('d', tr);
         document.getElementById('wcaHoldAc').setAttribute('transform', `translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${p.h.toFixed(1)})`);
+        // Gidilen yön (TRK): ardışık konumlardan; burun yönü (HDG) rüzgar içine kırık olduğundan farklıdır
+        const a = wcaAnim.pts[Math.max(0, idx - 1)], b = wcaAnim.pts[Math.min(wcaAnim.pts.length - 1, idx + 1)];
+        const trk = hdgNorm(Math.atan2(b.x - a.x, b.y - a.y) * 180 / Math.PI), L = 58;
+        const ln = (id, deg, len) => { const e = document.getElementById(id), r = deg * Math.PI / 180; e.setAttribute('x1', q[0].toFixed(1)); e.setAttribute('y1', q[1].toFixed(1)); e.setAttribute('x2', (q[0] + len * Math.sin(r)).toFixed(1)); e.setAttribute('y2', (q[1] - len * Math.cos(r)).toFixed(1)); };
+        ln('wcaHoldHdgLine', p.h, L); ln('wcaHoldTrkLine', trk, L);
+        const base = wcaAnim.base || 0, fm = (d) => String(normalizeDeg360(base + d)).padStart(3, '0');
+        document.getElementById('wcaHoldReadout').textContent = `HDG ${fm(p.h)}°  TRK ${fm(trk)}°`;
     }
     function wcaAnimLoop(ts) {
         if (state.activeTab !== 'wca') { wcaAnim.raf = null; return; }
         if (!wcaAnim.last) wcaAnim.last = ts;
         const dt = Math.min(0.1, (ts - wcaAnim.last) / 1000); wcaAnim.last = ts;
-        wcaAnim.t += dt * WCA_ANIM_SPEED;
+        if (wcaAnim.playing) { wcaAnim.t += dt * WCA_ANIM_SPEED * wcaAnim.speed; wcaAnim.wp += dt * (0.3 + (wcaAnim.wind ? wcaAnim.wind.ws : 0) / 50) * wcaAnim.speed / 2; wcaWindRender(); }
         if (wcaAnim.t > (wcaAnim.pts.length - 1) * WCA_ANIM_DT + 20) wcaAnim.t = 0;
         wcaAnimRender(); wcaAnim.raf = requestAnimationFrame(wcaAnimLoop);
     }
+    function wcaTogglePlay() { wcaAnim.playing = !wcaAnim.playing; document.getElementById('wcaPlayBtn').textContent = wcaAnim.playing ? 'DURAKLAT' : 'DEVAM ET'; }
+    function wcaRestart() { wcaAnim.t = 0; wcaAnimRender(); }
+    function wcaSetSpeed(v) { wcaAnim.speed = parseFloat(v) || 1; }
     function wcaAnimStart() { if (wcaAnim.raf) cancelAnimationFrame(wcaAnim.raf); wcaAnim.last = 0; wcaAnim.raf = requestAnimationFrame(wcaAnimLoop); }
 
     // ========== VARYO (V/S) HESAPLAYICI & C172/DA42 ANTRENMAN ==========
@@ -1765,41 +1663,21 @@
     function metarInit() { metarDecode(); metarGlossary(); metarQuiz(); }
 
     // ========== TIRMANIŞ GRADYANI ==========
-    const PERF_MODES = [
-        { t: 'Varyo ve yer hızı biliyorum → gradyan', f: [['pRoc','Tırmanış oranı (varyo)','fpm',500],['pGs','Yer hızı (GS)','kt',90]] },
-        { t: 'Gradyan ve yer hızı biliyorum → gereken varyo', f: [['pPct','Gradyan','%',5],['pGs','Yer hızı (GS)','kt',90]] },
-        { t: 'İrtifa ve mesafe biliyorum → gradyan', f: [['pAlt','Kazanılacak irtifa (0 ft\'den)','ft',1000],['pDist','Mesafe','NM',5],['pGs','Yer hızı (GS)','kt',90]] }
-    ];
-    let perfMode = 0;
-    function perfSetMode(i) { perfMode = i; perfInit(); }
     function perfInit() {
-        document.getElementById('perfModes').innerHTML = PERF_MODES.map((m, i) => `<button onclick="perfSetMode(${i})" class="text-left px-3 py-2 rounded-lg border" style="border-color:${i === perfMode ? 'var(--cyan)' : 'var(--border)'};color:${i === perfMode ? 'var(--cyan)' : 'var(--text-muted)'}">${m.t}</button>`).join('');
-        document.getElementById('perfFields').innerHTML = PERF_MODES[perfMode].f.map(f => `<label class="flex items-center justify-between gap-3 rounded-xl p-3 border text-xs font-mono" style="border-color:var(--border);background-color:var(--bg);color:var(--text)"><span>${f[1]}</span><span class="flex items-center gap-1"><input id="${f[0]}" type="number" value="${f[3]}" min="0" step="any" oninput="perfCalc()" class="w-24 text-right rounded-lg px-2 py-1 outline-none border font-bold text-avionics-cyan" style="background-color:var(--elevated);border-color:var(--border)"><span style="color:var(--text-muted)">${f[2]}</span></span></label>`).join('');
+        const F = [['pAlt', "Kazanılacak irtifa (0 ft'den)", 'ft', 1000], ['pDist', 'Mesafe', 'NM', 5]];
+        document.getElementById('perfFields').innerHTML = F.map(f => `<label class="flex items-center justify-between gap-3 rounded-xl p-3 border text-xs font-mono" style="border-color:var(--border);background-color:var(--bg);color:var(--text)"><span>${f[1]}</span><span class="flex items-center gap-1"><input id="${f[0]}" type="number" value="${f[3]}" min="0" step="any" oninput="perfCalc()" class="w-24 text-right rounded-lg px-2 py-1 outline-none border font-bold text-avionics-cyan" style="background-color:var(--elevated);border-color:var(--border)"><span style="color:var(--text-muted)">${f[2]}</span></span></label>`).join('');
         perfCalc();
     }
     function perfCalc() {
-        const v = (id, d) => { const e = document.getElementById(id); const n = e ? parseFloat(e.value) : NaN; return isNaN(n) || n < 0 ? d : n; };
+        const v = (id, d) => { const n = parseFloat(document.getElementById(id).value); return isNaN(n) || n < 0 ? d : n; };
         const $ = (id) => document.getElementById(id);
-        const gs = Math.max(1, v('pGs', 90));
-        let ftNm;
-        if (perfMode === 0) ftNm = v('pRoc', 0) * 60 / gs;
-        else if (perfMode === 1) ftNm = v('pPct', 0) / 100 * 6076;
-        else ftNm = v('pAlt', 0) / Math.max(0.1, v('pDist', 5));
-        const pct = ftNm / 6076 * 100, roc = ftNm * gs / 60, ang = Math.atan(pct / 100) * 180 / Math.PI;
+        const alt = v('pAlt', 0), D = Math.max(0.1, v('pDist', 5)), ftNm = alt / D, pct = ftNm / 6076 * 100;
         $('perfPct').textContent = '%' + pct.toFixed(1); $('perfFtNm').textContent = Math.round(ftNm);
-        $('perfRoc').textContent = Math.round(roc) + ' fpm'; $('perfAngle').textContent = ang.toFixed(1) + '°';
-        const D = perfMode === 2 ? Math.max(0.1, v('pDist', 5)) : 5, gain = ftNm * D, W = 400, x0 = 34, x1 = 384, y0 = 160, yT = 40;
-        let ticks = ''; const step = D > 12 ? Math.ceil(D / 6) : D > 6 ? 2 : D <= 2 ? 0.5 : 1;
-        for (let n = 0; n <= D + 1e-6; n += step) { const x = x0 + (x1 - x0) * n / D; ticks += `<line x1="${x.toFixed(1)}" y1="${y0}" x2="${x.toFixed(1)}" y2="${y0 + 5}" stroke="#64748B"/><text x="${x.toFixed(1)}" y="${y0 + 17}" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="monospace">${+n.toFixed(1)} NM</text>`; }
-        $('perfSvg').innerHTML = `<svg viewBox="0 0 400 190" class="w-full rounded-xl border" style="border-color:var(--border);background-color:var(--bg)"><polygon points="${x0},${y0} ${x1},${y0} ${x1},${yT}" fill="#22D3EE" fill-opacity="0.12"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" stroke="#64748B"/><line x1="${x1}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-dasharray="3 3"/>${ticks}<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-width="2.5"/><text x="${x0 + 6}" y="${y0 - 6}" font-size="10" fill="#94A3B8" font-family="monospace">0 ft</text><text x="${x1 - 6}" y="${(yT + (y0 - yT) / 2).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="#22D3EE" font-family="monospace">+${Math.round(gain)} ft</text><text x="${(x0 + x1) / 2}" y="${(yT + 6).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#FFB020" font-family="monospace">%${pct.toFixed(1)} • ${ang.toFixed(1)}°</text><text x="8" y="14" font-size="9" fill="#94A3B8" font-family="monospace">${+D.toFixed(1)} NM boyunca kazanılan irtifa • dikey ölçek abartılı</text></svg>`;
-        const toK = 1000 / Math.max(0.01, ftNm);
-        $('perfPlan').textContent = ftNm > 0 ? `Her 1 NM'de +${Math.round(ftNm)} ft. 1000 ft'e ulaşmak için ${toK.toFixed(1)} NM (≈ ${(toK / gs * 60).toFixed(1)} dk) gerekir.` : '';
-        const S = [
-            [`1) Yer hızını dakikaya çevirin: ${gs} kt ÷ 60 = ${(gs / 60).toFixed(2)} NM/dk. Her dakikada o kadar NM yol alırsınız.`, `2) Her NM'de ne kadar yükselirsiniz? ${Math.round(roc)} fpm ÷ ${(gs / 60).toFixed(2)} NM/dk = ${Math.round(ftNm)} ft/NM.`, `3) Yüzdeye çevirin: 1 NM = 6076 ft olduğundan ${Math.round(ftNm)} ÷ 6076 × 100 = %${pct.toFixed(1)}. Kısayol: % ≈ varyo ÷ GS = ${(roc / gs).toFixed(1)}.`],
-            [`1) Her NM'de gereken irtifa: %${pct.toFixed(1)} × 6076 ÷ 100 = ${Math.round(ftNm)} ft/NM (kısayol: % × 61).`, `2) Dakikada kaç NM gidersiniz? ${gs} kt ÷ 60 = ${(gs / 60).toFixed(2)} NM/dk.`, `3) Gereken varyo = ${Math.round(ftNm)} ft/NM × ${(gs / 60).toFixed(2)} NM/dk = ${Math.round(roc)} fpm. Kısayol: % × GS = ${(pct * gs).toFixed(0)} fpm.`],
-            [`1) Her NM'de ne kadar yükselirsiniz? ${v('pAlt', 0)} ft ÷ ${+D.toFixed(1)} NM = ${Math.round(ftNm)} ft/NM.`, `2) Yüzdeye çevirin: ${Math.round(ftNm)} ÷ 6076 × 100 = %${pct.toFixed(1)}.`, `3) Gereken varyo: ${Math.round(ftNm)} ft/NM × (${gs} ÷ 60) NM/dk = ${Math.round(roc)} fpm.`]
-        ][perfMode];
-        $('perfSteps').innerHTML = S.map(t => `<div>${t}</div>`).join('');
+        const x0 = 34, x1 = 384, y0 = 160, yT = 40, step = D > 12 ? Math.ceil(D / 6) : D > 6 ? 2 : D <= 2 ? 0.5 : 1;
+        let ticks = ''; for (let n = 0; n <= D + 1e-6; n += step) { const x = x0 + (x1 - x0) * n / D; ticks += `<line x1="${x.toFixed(1)}" y1="${y0}" x2="${x.toFixed(1)}" y2="${y0 + 5}" stroke="#64748B"/><text x="${x.toFixed(1)}" y="${y0 + 17}" text-anchor="middle" font-size="9" fill="#94A3B8" font-family="monospace">${+n.toFixed(1)} NM</text>`; }
+        $('perfSvg').innerHTML = `<svg viewBox="0 0 400 190" class="w-full rounded-xl border" style="border-color:var(--border);background-color:var(--bg)"><polygon points="${x0},${y0} ${x1},${y0} ${x1},${yT}" fill="#22D3EE" fill-opacity="0.12"/><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" stroke="#64748B"/><line x1="${x1}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-dasharray="3 3"/>${ticks}<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${yT}" stroke="#22D3EE" stroke-width="2.5"/><text x="${x0 + 6}" y="${y0 - 6}" font-size="10" fill="#94A3B8" font-family="monospace">0 ft</text><text x="${x1 - 6}" y="${(yT + (y0 - yT) / 2).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="#22D3EE" font-family="monospace">+${Math.round(alt)} ft</text><text x="${(x0 + x1) / 2}" y="${yT + 6}" text-anchor="middle" font-size="11" font-weight="700" fill="#FFB020" font-family="monospace">%${pct.toFixed(1)}</text><text x="8" y="14" font-size="9" fill="#94A3B8" font-family="monospace">${+D.toFixed(1)} NM boyunca kazanılan irtifa • dikey ölçek abartılı</text></svg>`;
+        $('perfPlan').textContent = ftNm > 0 ? `Her 1 NM'de +${Math.round(ftNm)} ft. 1000 ft'e ulaşmak için ${(1000 / ftNm).toFixed(1)} NM gerekir.` : '';
+        $('perfSteps').innerHTML = [`1) Her NM'de kaç ft? ${Math.round(alt)} ft ÷ ${+D.toFixed(1)} NM = ${Math.round(ftNm)} ft/NM.`, `2) Yüzdeye çevirin: 1 NM = 6076 ft olduğundan ${Math.round(ftNm)} ÷ 6076 × 100 = %${pct.toFixed(1)}. Kısayol: ft/NM ÷ 61 = ${(ftNm / 61).toFixed(1)}.`].map(t => `<div>${t}</div>`).join('');
     }
 
     // ========== INIT ==========
@@ -1817,8 +1695,6 @@
             c.innerHTML = h;
         };
         buildRose('g1000CompassTicks');
-        buildRose('wcaHsiCompassTicks');
-        buildRose('holdHsiCompassTicks');
         switchTab('home');
         nextQuestion();
         calculateHolding();
